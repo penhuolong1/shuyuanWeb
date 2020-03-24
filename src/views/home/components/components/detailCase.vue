@@ -299,6 +299,7 @@ export default {
     save() {
       updateCase(this.editCaseDetail).then(res => {
         console.log(res)
+        this.getCaseDetail()
       })
       this.isEdit = false
     },
