@@ -30,3 +30,5 @@ yarn run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/zh/guide).
+
+### git 提交
