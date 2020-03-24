@@ -16,22 +16,22 @@ module.exports = {
   devServer: {
     proxy: {
       "/api": {
-        target: "http://139.9.187.168:7898", //法院框架后端地址，新项目改为你真实的后端地址
+        target: "https://cstj.olcourt.cn/api/", //法院框架后端地址，新项目改为你真实的后端地址
         //路径重写
         pathRewrite: {
           "^/api": ""
         },
-        secure: false, // 如果是https接口，需要配置这个参数为true
+        secure: true, // 如果是https接口，需要配置这个参数为true
         changeOrigin: true // 如果接口跨域，需要进行这个参数配置为true
       },
       "/test": {
         // target: "http://rap2api.taobao.org",//淘宝官方RAP2系统
-        target: "http://139.9.187.168:7898",
+        target: "https://cstj.olcourt.cn/api/",
         //路径重写
         pathRewrite: {
           "^/test": "/"
         },
-        secure: false, // 如果是https接口，需要配置这个参数为true
+        secure: true, // 如果是https接口，需要配置这个参数为true
         changeOrigin: true // 如果接口跨域，需要进行这个参数配置为true
       }
     }

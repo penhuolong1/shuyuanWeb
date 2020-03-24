@@ -1,6 +1,6 @@
 ## Project setup
 ```
-yarn add node-sass
+yarn add node-sass2222
 //如果安装不上，请切换淘宝源
 yarn config set registry https://registry.npm.taobao.org
 //卸载后再次进行安装，首次安装比较久，耐心等待
