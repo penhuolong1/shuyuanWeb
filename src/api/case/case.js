@@ -43,6 +43,6 @@ export function updateCase(params) {
   return service({
     url: "/web/case/updateCaseInfo.jhtml",
     method: "POST",
-    params
+    data: params
   });
 }

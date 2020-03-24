@@ -263,6 +263,8 @@ export default {
     },
     add() {
       console.log('--add--')
+      this.caseId = ''
+      this.isTable = false
     },
     exportData() {
       console.log('--exportData--')

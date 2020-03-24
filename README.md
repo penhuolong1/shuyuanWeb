@@ -32,3 +32,6 @@ yarn run lint
 See [Configuration Reference](https://cli.vuejs.org/zh/guide).
 
 ### git 提交
+```
+git push origin master
+```

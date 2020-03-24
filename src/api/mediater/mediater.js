@@ -14,7 +14,7 @@ export function getMediater(params) {
 // 获取调解人员
 export function getMediaterUser(params) {
   return service({
-    url: "/court/mediater/getMByCId.jhtml",
+    url: "/court/mediateter/getMByCId.jhtml",
     method: "GET",
     params
   });

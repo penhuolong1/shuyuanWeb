@@ -7,6 +7,7 @@
         @cancel="cancel"
         @save="save"
         @back="back"
+        :isEdit="isEdit"
       ></editBtn>
     </div>
     <!-- 详情部分 -->
@@ -169,16 +170,24 @@
       </div>
       <div class="item item-key">调解员</div>
       <div class="item item-value">
-        <el-input
+        <el-select
           v-model="editCaseDetail.mediaterId"
-          placeholder="调解员"
-        ></el-input>
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in mediaterUserData"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
       </div>
       <div class="item item-key">审核/登记时间</div>
       <div class="item item-value">
         <el-date-picker
           v-model="editCaseDetail.registerDate"
-          type="date"
+          type="datetime"
           placeholder="选择审核/登记时间"
         >
         </el-date-picker>
@@ -187,7 +196,7 @@
       <div class="item item-value">
         <el-date-picker
           v-model="editCaseDetail.mediateTerm"
-          type="date"
+          type="datetime"
           placeholder="选择调解期限"
         >
         </el-date-picker>
@@ -237,9 +246,7 @@ export default {
           label: '否'
         }
       ],
-      value: '',
       isEdit: false, // 是否出去编辑状态
-      value1: null,
       briefData: [], // 案由
       editCaseDetail: {}, // 编辑案件信息用到的参数
       mediaterData: [], // 调解机构数据
@@ -264,6 +271,10 @@ export default {
   methods: {
     // 获取案件详情
     getCaseDetail() {
+      if (!this.caseId) {
+        this.isEdit = true
+        return
+      }
       detailCase({ lawCaseId: this.caseId }).then(res => {
         this.detailCaseData = res.lawCase
         this.detailCaseData.processChar =
@@ -276,7 +287,7 @@ export default {
           isAboutProperty: res.lawCase.aboutProperty, //是否涉及财产 ture/false
           applyStandard: res.lawCase.applyStandard, //申请标的
           caseSource: res.lawCase.caseSource, //纠纷来源
-          registerCourtId: '', //审核/登记机构id
+          registerCourtId: null, //审核/登记机构id
           mediateCourtId: res.lawCase.court.id || '', //受理/调解机构id
           mediaterId: res.lawCase.mediater.id || '', //调解人员id
           registerDate: formatDate(res.lawCase.registerDate), //审核登记日期
@@ -297,11 +308,33 @@ export default {
     },
     // 保存事件
     save() {
-      updateCase(this.editCaseDetail).then(res => {
-        console.log(res)
-        this.getCaseDetail()
+      updateCase({
+        dCaseNo: this.editCaseDetail.dCaseNo,
+        sqCaseNo: this.editCaseDetail.sqCaseNo,
+        briefId: this.editCaseDetail.briefId,
+        isAboutProperty: '',
+        applyStandard: 0, // 只能为数字
+        caseSource: '',
+        registerCourtId: '', //审核/登记机构id
+        mediateCourtId: '', //受理/调解机构id
+        mediaterId: '', //调解人员id
+        registerDate: '', //审核登记日期  只能为时间
+        mediateTerm: '', //调解限期 // 是能为时间
+        process: 0, //案件进度  只能为数字
+        mediateRequest: '', //诉讼请求
+        reason: '' //事实与理由
+      }).then(res => {
+        if (res.state === 100) {
+          this.$message({
+            showClose: true,
+            message: res.message,
+            type: 'success'
+          })
+          this.caseId = res.caseId
+          this.getCaseDetail()
+          this.isEdit = false
+        }
       })
-      this.isEdit = false
     },
     // 取消事件
     cancel() {
@@ -311,26 +344,40 @@ export default {
     getBrief() {
       // 把pageSize设大用于做select的数据
       brief({ pageSize: 1000 }).then(res => {
-        this.briefData = res.briefPage.content
+        this.briefData = JSON.parse(JSON.stringify(res.briefPage.content))
+        this.briefData.unshift({
+          id: '',
+          name: '请选择'
+        })
       })
     },
     // 获取调解机构
     getMediater() {
       getMediater({ pageSize: 1000 }).then(res => {
-        this.mediaterData = res.content
+        this.mediaterData = JSON.parse(JSON.stringify(res.content))
+        this.mediaterData.unshift({
+          id: '',
+          name: '请选择'
+        })
       })
     },
     // 获取调解人员
     getMediaterUser() {
       getMediaterUser({ courtId: this.selectmediaterId, pageSize: 1000 }).then(
         res => {
-          console.log('---------调解人员-------')
-          console.log(res)
+          this.mediaterUserData = JSON.parse(
+            JSON.stringify(res.dataPage.content)
+          )
+          this.mediaterUserData.unshift({
+            id: '',
+            name: '请选择'
+          })
         }
       )
     },
     // 选择调解机构触发
     selectMeduater(id) {
+      this.editCaseDetail.mediaterId = ''
       this.selectmediaterId = id
       this.getMediaterUser()
     },
@@ -342,8 +389,10 @@ export default {
           label: PROCESSMAP[key]
         })
       }
-      console.log('-----进度------')
-      console.log(this.processTypeData)
+      this.processTypeData.unshift({
+        value: '',
+        label: '请选择'
+      })
     }
   }
 }

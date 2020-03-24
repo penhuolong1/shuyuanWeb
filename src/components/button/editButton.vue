@@ -32,11 +32,15 @@
 <script>
 export default {
   data() {
-    return {
-      isEdit: false // 是否处于编辑状态
+    return {}
+  },
+  props: {
+    isEdit: {
+      // 是否处于编辑状态
+      type: Boolean,
+      value: false
     }
   },
-  props: {},
   created() {},
   mounted() {},
   methods: {
