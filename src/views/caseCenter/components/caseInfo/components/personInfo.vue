@@ -4,22 +4,19 @@
       <titleIcon :titleText="titleMap[personType]"></titleIcon>
       <div class="header-right">
         <span>{{headText}}</span>
-        <editBtn
-          :isNeedAdd="true"
-          @add="add"
-          @del="del"
-          :isEdit="isEdit"
-        ></editBtn>
+        <editBtn :isNeedAdd="true"
+                 @add="add"
+                 @del="del"
+                 :isEdit="isEdit"></editBtn>
       </div>
     </div>
     <div class="person-info">
       <div class="person-info-left">
-        <personForm
-          :personType="personType"
-          :isEdit="isEdit"
-          :isCaseCenter="true"
-          :index="index"
-        ></personForm>
+        <personForm :personType="personType"
+                    :isEdit="isEdit"
+                    :isCaseCenter="true"
+                    :index="index"
+                    :litigant="litigant"></personForm>
       </div>
       <div class="person-info-right">
         <meterials></meterials>
@@ -34,7 +31,7 @@ import titleIcon from '@/components/styleIcon/titleIcon'
 import personForm from '@/components/form/personForm'
 import meterials from '@/components/materials/materials'
 export default {
-  data() {
+  data () {
     return {
       titleMap: {
         1: '申',
@@ -55,7 +52,8 @@ export default {
       type: Boolean,
       value: false
     },
-    index: null //表示当前为第几个受理人
+    index: null, //表示当前为第几个受理人
+    litigant: null //组件传来的代理人信息
   },
   components: {
     personForm,
@@ -63,13 +61,13 @@ export default {
     editBtn,
     meterials
   },
-  created() {},
-  mounted() {},
+  created () { },
+  mounted () { },
   methods: {
-    add() {
+    add () {
       this.$emit('add')
     },
-    del() {
+    del () {
       this.$emit('del')
     }
   }
