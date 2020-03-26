@@ -40,6 +40,12 @@ export function brief(params) {
 
 // 添加编辑案件
 export function updateCase(params) {
+  // let data = {}
+  // if (params) {
+  //   for (let key in params) {
+  //     if (params.)
+  //   }
+  // }
   return service({
     url: "/web/case/updateCaseInfo.jhtml",
     method: "POST",

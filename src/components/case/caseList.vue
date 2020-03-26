@@ -203,7 +203,7 @@
 
 <script>
 import searchBtn from '@/components/button/searchButon'
-import caseDetail from '../components/components/detailCase'
+import caseDetail from '@/components/case/caseDetail'
 import tab from '@/components/tab/tab'
 import { listCase, delCase } from '@/api/case/case.js'
 export default {
@@ -248,6 +248,9 @@ export default {
       caseId: null //案件ID
     }
   },
+  props: {
+    isCaseCenter: null //判断是否在案件中心使用 1为是 其他为否
+  },
   components: {
     searchBtn,
     tab,
@@ -263,8 +266,12 @@ export default {
     },
     add() {
       console.log('--add--')
-      this.caseId = ''
-      this.isTable = false
+      if (this.isCaseCenter == 1) {
+        this.$emit('add')
+      } else {
+        this.caseId = ''
+        this.isTable = false
+      }
     },
     exportData() {
       console.log('--exportData--')
@@ -349,8 +356,12 @@ export default {
     },
     // 点击获取caseId 并切换判断条件展示详情部分隐藏列表部分
     detailCase(id) {
-      this.caseId = id
-      this.isTable = false
+      if (this.isCaseCenter == 1) {
+        this.$emit('detailCase', id)
+      } else {
+        this.caseId = id
+        this.isTable = false
+      }
     },
     // 删除案件
     delCase(id) {
@@ -373,10 +384,6 @@ export default {
 
 <style lang="scss">
 @import '~@/styles/variables.scss';
-
-.search-wrapper {
-  margin-top: 30px;
-}
 .tab-box {
   margin-top: 30px;
 }
@@ -414,16 +421,6 @@ export default {
 .table-dropdown {
   &.el-dropdown-menu {
     position: relative;
-    // &:after {
-    //   content: '';
-    //   height: 100%;
-    //   width: 100%;
-    //   position: absolute;
-    //   top: 0;
-    //   left: 0;
-    //   background: inherit;
-    //   filter: blur(2px);
-    // }
   }
 }
 </style>

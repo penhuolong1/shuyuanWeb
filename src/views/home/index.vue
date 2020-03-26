@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import caseList from './components/caseList'
-import eventList from './components/eventList'
+import caseList from '@/components/case/caseList'
+
 export default {
   data() {
     return {

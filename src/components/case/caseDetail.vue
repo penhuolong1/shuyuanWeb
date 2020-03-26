@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <span>添加案件信息</span>
+      <span>案件信息</span>
       <editBtn
         @edit="edit"
         @cancel="cancel"
@@ -261,8 +261,12 @@ export default {
   props: {
     caseId: null
   },
+  watch: {
+    caseId() {
+      this.getCaseDetail()
+    }
+  },
   created() {
-    this.getCaseDetail()
     this.getBrief()
     this.getMediater()
     this.getProcessType()
@@ -402,6 +406,43 @@ export default {
 .form-table {
   grid-template-columns: repeat(4, 120px 1fr);
 }
+// 通用查看详情和编辑的表格的样式
+.form-table {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 120px 1fr);
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  overflow: auto;
+
+  .item {
+    min-height: 60px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.item-key {
+      background-color: #f3f3f3;
+      font-size: 14px;
+      color: #2c2c2c;
+    }
+
+    &.item-value {
+      font-size: 12px;
+      color: #707070;
+      border-bottom: 1px solid rgba(239, 239, 239, 0.3);
+      min-width: 120px;
+
+      .el-input__inner {
+        border: none !important;
+        font-size: 12px;
+        color: #707070;
+        text-align: center;
+      }
+    }
+  }
+}
+
 .header {
   margin-bottom: 30px;
   > span {

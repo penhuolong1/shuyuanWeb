@@ -22,6 +22,16 @@ html {
     border-radius: 5px;
 }
 
+// 去掉input number 的上下箭头
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 // 搜索部分通用样式
 .search-item {
     display: inline-flex;
@@ -163,37 +173,20 @@ html {
     }
 }
 
-// 通用查看详情和编辑的表格的样式
 .form-table {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, 120px 1fr);
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
-
-    .item {
-        min-height: 60px;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        &.item-key {
-            background-color: #f3f3f3;
-            font-size: 14px;
-            color: #2c2c2c;
+    .item-value {
+        .el-select {
+            width: 100%;
         }
+    }
 
-        &.item-value {
-            font-size: 12px;
-            color: #707070;
-            border-bottom: 1px solid rgba(239, 239, 239, 0.3);
-
-            .el-input__inner {
-                border: none !important;
-                font-size: 12px;
-                color: #707070;
-                text-align: center;
-            }
+    .item-key {
+        .el-input__inner {
+            background-color: transparent;
         }
+    }
+
+    .el-input__inner {
+        border: none !important;
     }
 }

@@ -13,7 +13,7 @@
               <div class="info-inner">
                 <div class="avator">
                   <img
-                    src="../../../assets/logo.png"
+                    src="@/assets/logo.png"
                     alt=""
                   >
                 </div>

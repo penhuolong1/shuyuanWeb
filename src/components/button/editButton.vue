@@ -4,27 +4,25 @@
       class="edit-wrapper"
       v-if="!isEdit"
     >
+      <span @click="edit">编辑</span>
       <span
-        class="edit"
-        @click="edit"
-      >编辑</span>
-      <span
-        class="back"
         @click="back"
+        v-if="!isNeedAdd"
       >返回</span>
     </div>
     <div
       class="save-wrapper"
       v-if="isEdit"
     >
-      <span
-        class="save"
-        @click="save"
-      >保存</span>
-      <span
-        class="cancel"
-        @click="cancel"
-      >取消</span>
+      <span @click="save">保存</span>
+      <span @click="cancel">取消</span>
+    </div>
+    <div
+      class="add-wrapper"
+      v-if="isNeedAdd"
+    >
+      <span @click="add">添加</span>
+      <span @click="del">删除</span>
     </div>
   </div>
 </template>
@@ -37,6 +35,11 @@ export default {
   props: {
     isEdit: {
       // 是否处于编辑状态
+      type: Boolean,
+      value: false
+    },
+    isNeedAdd: {
+      // 是否需要添加按钮
       type: Boolean,
       value: false
     }
@@ -63,6 +66,13 @@ export default {
     cancel() {
       this.isEdit = false
       this.$emit('cancel')
+    },
+    add() {
+      this.$emit('add')
+    },
+    del() {
+      console.log('---del-----')
+      this.$emit('del')
     }
   }
 }
@@ -73,7 +83,8 @@ export default {
 .edit-btn-wrapper {
   display: inline;
   .edit-wrapper,
-  .save-wrapper {
+  .save-wrapper,
+  .add-wrapper {
     display: inline;
     span {
       cursor: pointer;

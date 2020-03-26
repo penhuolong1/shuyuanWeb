@@ -64,6 +64,7 @@ export default {
     width: 90px;
     margin: 0px;
     margin-right: 25px;
+    margin-top: 20px;
   }
 }
 </style>
