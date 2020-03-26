@@ -11,6 +11,8 @@
           :personType="1"
           @add="addProPoser"
           @del="delProPoser(index)"
+          :isEdit="isEdit"
+          :index="index"
         ></personInfo>
       </div>
       <!-- 代理人部分 -->
@@ -22,6 +24,8 @@
           :personType="2"
           @add="addagent"
           @del="delagent(index)"
+          :isEdit="isEdit"
+          :index="index"
         ></personInfo>
       </div>
       <!-- 被申请人部分 -->
@@ -33,6 +37,8 @@
           :personType="3"
           @add="addrespondent"
           @del="delrespondent(index)"
+          :isEdit="isEdit"
+          :index="index"
         ></personInfo>
       </div>
     </div>
@@ -41,6 +47,7 @@
 
 <script>
 import personInfo from './personInfo'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -58,10 +65,29 @@ export default {
         {
           name: '被申请人1'
         }
-      ] // 被申请人表单组件数据
+      ], // 被申请人表单组件数据
+      litigants: null // 受理人数据
     }
   },
-  props: {},
+  props: {
+    isEdit: {
+      // 是否处于编辑状态
+      type: Boolean,
+      value: false
+    }
+  },
+  computed: {
+    ...mapGetters(['getCaseData'])
+  },
+  watch: {
+    getCaseData() {
+      this.litigants = this.getCaseData.litigants
+        ? this.getCaseData.litigants
+        : ''
+      console.log('----触发-----')
+      this.deallItigants()
+    }
+  },
   components: {
     personInfo
   },
@@ -135,6 +161,60 @@ export default {
       this.respondentItems.forEach((item, index) => {
         item.name = `被申请人${index + 1}`
       })
+    },
+    // 处理受理人数据
+    deallItigants() {
+      let proposerList = [] //申请人数组
+      let agentList = [] //代理人数组
+      let respondentList = [] // 被申请人数组
+      if (this.litigants && this.litigants.length > 0) {
+        this.litigants.forEach(item => {
+          if (item.litigationStatus) {
+            if (item.litigationStatus.name == '申请人') {
+              proposerList.push(item)
+            }
+            if (item.litigationStatus.name == '被申请人') {
+              respondentList.push(item)
+            }
+          }
+          if (item.lawyer && item.lawyer.length > 0) {
+            item.lawyer.forEach(item1 => {
+              agentList.push(item1)
+            })
+          }
+        })
+      }
+      // 申请人
+      if (proposerList && proposerList.length > 0) {
+        this.proposerItems = []
+        for (let i = 0; i < proposerList.length; i++) {
+          this.proposerItems.push({
+            name: `申请人${i + 1}`
+          })
+        }
+      }
+      // 代理人
+      if (agentList && agentList.length > 0) {
+        this.agentItems = []
+        for (let i = 0; i < agentList.length; i++) {
+          this.agentItems.push({
+            name: `代理人${i + 1}`
+          })
+        }
+      }
+      // 被申请人
+      if (proposerList && proposerList.length > 0) {
+        this.respondentItems = []
+        for (let i = 0; i < proposerList.length; i++) {
+          this.respondentItems.push({
+            name: `被申请人${i + 1}`
+          })
+        }
+      }
+      console.log('11111111')
+      console.log(this.proposerItems)
+      console.log(this.agentItems)
+      console.log(this.respondentItems)
     }
   }
 }

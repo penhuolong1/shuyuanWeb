@@ -3,43 +3,43 @@
     <!-- 详情部分 -->
     <div
       class="form-table"
-      v-if="!isEdit"
+      v-if="!isEdit && formData"
     >
       <div class="item item-value border-right">{{personMap[personType]}}</div>
       <div class="item item-value item-style">
-        <span>律师</span>
+        <span v-if="formData.identityType">{{formData.identityType}}</span>
       </div>
       <div class="item item-key">姓名</div>
       <div class="item item-value border-right">
-        <span>胡新</span>
+        <span v-if="formData.litigantName">{{formData.litigantName}}</span>
       </div>
       <div class="item item-key">民族</div>
       <div class="item item-value">
-        <span>汉族</span>
+        <span v-if="formData.nation">{{formData.nation}}</span>
       </div>
       <div class="item item-key">性别</div>
       <div class="item item-value border-right">
-        <span>男</span>
+        <span v-if="formData.litigantSex">{{formData.litigantSex}}</span>
       </div>
       <div class="item item-key">年龄</div>
       <div class="item item-value">
-        <span>30</span>
+        <span v-if="formData.birthday">{{formData.birthday}}</span>
       </div>
       <div class="item item-value">{{personType != 2 ? '证件号码':'证件号码&律师职业证号'}}</div>
       <div class="item item-value item-style1">
-        <span>350424199511231245</span>
+        <span v-if="formData.identityCard">{{formData.identityCard}}</span>
       </div>
       <div class="item item-key">联系号码</div>
       <div class="item item-key item-style2">
-        <span>13022122231</span>
+        <span v-if="formData.litigantPhone">{{formData.litigantPhone}}</span>
       </div>
       <div class="item item-value">住址</div>
       <div class="item item-value item-style3">
-        <span>福建省泉州是1是阿三打算</span>
+        <span v-if="formData.address">{{formData.address}}</span>
       </div>
       <div class="item item-key">工作单位或职务</div>
       <div class="item item-key item-style4">
-        <span>民工</span>
+        <span v-if="formData.employer">{{formData.employer}}</span>
       </div>
     </div>
     <!-- 详情部分结束 -->
@@ -136,6 +136,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { IDENTITYMAP, SEXMAP } from '@/utils/constVal.js'
 export default {
   data() {
     return {
@@ -163,21 +165,84 @@ export default {
         }
       ],
       value: '',
-      isEdit: false,
       personMap: {
         1: '申请人',
         2: '代理人',
         3: '被申请人'
-      }
+      },
+      litigants: null, //受理人信息
+      formData: null //表单数据
+    }
+  },
+  computed: {
+    ...mapGetters(['getCaseData'])
+  },
+  watch: {
+    getCaseData() {
+      this.litigants = this.getCaseData.litigants
+        ? this.getCaseData.litigants
+        : ''
+      this.deallItigants()
     }
   },
   props: {
-    personType: null // 添加人类型 1申请人 2代理人 3被申请人
+    personType: null, // 添加人类型 1申请人 2代理人 3被申请人
+    isEdit: {
+      type: Boolean,
+      value: false
+    },
+    isCaseCenter: {
+      //是否在案件中心调用
+      type: Boolean,
+      value: true
+    },
+    index: null //表示第几个受理人
   },
   components: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    // 处理受理人数据
+    deallItigants() {
+      let proposerList = [] //申请人数组
+      let agentList = [] //代理人数组
+      let respondentList = [] // 被申请人数组
+      if (this.litigants && this.litigants.length > 0) {
+        this.litigants.forEach(item => {
+          if (item.litigationStatus) {
+            if (item.litigationStatus.name == '申请人') {
+              proposerList.push(item)
+            }
+            if (item.litigationStatus.name == '被申请人') {
+              respondentList.push(item)
+            }
+          }
+          if (item.lawyer && item.lawyer.length > 0) {
+            item.lawyer.forEach(item1 => {
+              agentList.push(item1)
+            })
+          }
+        })
+      }
+      // 假如是申请人
+      if (this.personType == 1) {
+        this.formData = proposerList[this.index]
+      } else if (this.personType == 2) {
+        this.formData = agentList[this.index]
+      } else if (this.personType == 3) {
+        this.formData = respondentList[this.index]
+      }
+      console.log('-------申请人-------')
+      console.log(proposerList)
+      console.log('-------代理人-------')
+      console.log(agentList)
+      console.log('-------被申请人-------')
+      console.log(respondentList)
+
+      console.log('---------结果----------')
+      console.log(this.formData)
+    }
+  }
 }
 </script>
 

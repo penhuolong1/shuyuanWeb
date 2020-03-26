@@ -16,8 +16,18 @@ const PROCESSMAP = { // 案件进程map
   8: "调解成功（已签字）",
   9: "不受理"
 }
+const IDENTITYMAP = { //身份证类别：1.自然人-身份证；2法人-统一信用代码
+  1: "自然人",
+  2: "法人"
+}
+const SEXMAP = { //性别类型 0男 1女
+  0: "男",
+  1: "女"
+}
 export {
   SYS_NAME,
   ROLEMAP,
-  PROCESSMAP
+  PROCESSMAP,
+  IDENTITYMAP,
+  SEXMAP
 };

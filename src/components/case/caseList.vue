@@ -196,7 +196,10 @@
       class="editTable"
       v-if="!isTable"
     >
-      <caseDetail :caseId="caseId"></caseDetail>
+      <caseDetail
+        :caseId="caseId"
+        :lawCaseData="lawCaseData"
+      ></caseDetail>
     </div>
   </div>
 </template>
@@ -205,7 +208,7 @@
 import searchBtn from '@/components/button/searchButon'
 import caseDetail from '@/components/case/caseDetail'
 import tab from '@/components/tab/tab'
-import { listCase, delCase } from '@/api/case/case.js'
+import { listCase, delCase, detailCase } from '@/api/case/case.js'
 export default {
   data() {
     return {
@@ -245,7 +248,8 @@ export default {
         }
       ], // tab切换栏的数据
       isTable: true,
-      caseId: null //案件ID
+      caseId: null, //案件ID
+      lawCaseData: null //案件详情数据
     }
   },
   props: {
@@ -356,6 +360,7 @@ export default {
     },
     // 点击获取caseId 并切换判断条件展示详情部分隐藏列表部分
     detailCase(id) {
+      this.getdetailCase(id)
       if (this.isCaseCenter == 1) {
         this.$emit('detailCase', id)
       } else {
@@ -377,6 +382,12 @@ export default {
           })
         })
         .catch(() => {})
+    },
+    // 获取案件详情
+    getdetailCase(id) {
+      detailCase({ lawCaseId: id }).then(res => {
+        this.lawCaseData = JSON.stringify(res.lawCase)
+      })
     }
   }
 }

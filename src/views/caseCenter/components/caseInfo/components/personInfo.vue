@@ -8,12 +8,18 @@
           :isNeedAdd="true"
           @add="add"
           @del="del"
+          :isEdit="isEdit"
         ></editBtn>
       </div>
     </div>
     <div class="person-info">
       <div class="person-info-left">
-        <personForm :personType="personType"></personForm>
+        <personForm
+          :personType="personType"
+          :isEdit="isEdit"
+          :isCaseCenter="true"
+          :index="index"
+        ></personForm>
       </div>
       <div class="person-info-right">
         <meterials></meterials>
@@ -26,7 +32,7 @@
 import editBtn from '@/components/button/editButton'
 import titleIcon from '@/components/styleIcon/titleIcon'
 import personForm from '@/components/form/personForm'
-import meterials from './materials'
+import meterials from '@/components/materials/materials'
 export default {
   data() {
     return {
@@ -44,7 +50,12 @@ export default {
   },
   props: {
     personType: null, // 添加人类型 1申请人 2代理人 3被申请人
-    headText: null
+    headText: null,
+    isEdit: {
+      type: Boolean,
+      value: false
+    },
+    index: null //表示当前为第几个受理人
   },
   components: {
     personForm,
@@ -59,7 +70,6 @@ export default {
       this.$emit('add')
     },
     del() {
-      console.log('del')
       this.$emit('del')
     }
   }
@@ -73,6 +83,7 @@ export default {
   .header-right {
     display: inline-block;
     vertical-align: top;
+    color: #abafb3;
   }
   margin-bottom: 30px;
   margin-top: 30px;

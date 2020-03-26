@@ -7,13 +7,13 @@
         @cancel="cancel"
         @save="save"
         @back="back"
-        :isEdit="isEdit"
+        :isEdit="isEditData"
       ></editBtn>
     </div>
     <!-- 详情部分 -->
     <div
       class="form-table"
-      v-if="!isEdit && detailCaseData"
+      v-if="!isEditData && detailCaseData"
     >
       <div class="item item-key">登记号</div>
       <div class="item item-value">
@@ -47,7 +47,7 @@
       </div>
       <div class="item item-key">审核/登记机构</div>
       <div class="item item-value">
-        <span>{{detailCaseData.registerCourt}}
+        <span v-if="detailCaseData.registerCourt">{{detailCaseData.registerCourt.name}}
         </span>
       </div>
       <div class="item item-key">调解机构</div>
@@ -80,7 +80,7 @@
     <!-- 编辑部分 -->
     <div
       class="form-table"
-      v-if="isEdit"
+      v-if="isEditData"
     >
       <div class="item item-key">登记号</div>
       <div class="item item-value">
@@ -227,6 +227,7 @@ import { formatDate } from '@/utils/format.js'
 import { getMediater, getMediaterUser } from '@/api/mediater/mediater.js'
 import editBtn from '@/components/button/editButton'
 import { PROCESSMAP } from '@/utils/constVal.js'
+import { mapMutations } from 'vuex'
 export default {
   data() {
     return {
@@ -246,54 +247,76 @@ export default {
           label: '否'
         }
       ],
-      isEdit: false, // 是否出去编辑状态
       briefData: [], // 案由
       editCaseDetail: {}, // 编辑案件信息用到的参数
       mediaterData: [], // 调解机构数据
       mediaterUserData: [], // 调解人员数据
       selectmediaterId: '', // 选择的调解机构ID
-      processTypeData: [] //进度类型数据
+      processTypeData: [], //进度类型数据
+      isEditData: false //是否处于编辑状态
     }
   },
   components: {
     editBtn
   },
   props: {
-    caseId: null
+    caseId: null,
+    isEdit: {
+      // 是否处于编辑状态
+      type: Boolean,
+      value: false
+    },
+    lawCaseData: null
   },
   watch: {
     caseId() {
       this.getCaseDetail()
+    },
+    isEdit() {
+      this.isEditData = this.isEdit
+    },
+    lawCaseData() {
+      console.log('-----lawCaseData1-----')
+      console.log(this.lawCaseData)
     }
   },
   created() {
     this.getBrief()
     this.getMediater()
     this.getProcessType()
+    console.log('-----lawCaseData-----')
+    console.log(this.lawCaseData)
   },
   mounted() {},
   methods: {
+    ...mapMutations(['SET_CASEDATA']),
     // 获取案件详情
     getCaseDetail() {
       if (!this.caseId) {
-        this.isEdit = true
+        this.isEditData = true
         return
       }
       detailCase({ lawCaseId: this.caseId }).then(res => {
         this.detailCaseData = res.lawCase
+        this.SET_CASEDATA(res.lawCase)
         this.detailCaseData.processChar =
           PROCESSMAP[this.detailCaseData.process]
+        if (res.lawCase.court) {
+          this.getMediaterUser(res.lawCase.court.id)
+        }
         this.editCaseDetail = {
           caseId: this.caseId, //案件id （无值为新增，有为修改）
           dCaseNo: res.lawCase.dCaseNo, //登字号
           sqCaseNo: res.lawCase.sqCaseNo, //调解号
-          briefId: res.lawCase.brief.id || '', //案由id
+          briefId: res.lawCase.brief ? res.lawCase.brief.id : '', //案由id
           isAboutProperty: res.lawCase.aboutProperty, //是否涉及财产 ture/false
           applyStandard: res.lawCase.applyStandard, //申请标的
           caseSource: res.lawCase.caseSource, //纠纷来源
-          registerCourtId: null, //审核/登记机构id
-          mediateCourtId: res.lawCase.court.id || '', //受理/调解机构id
-          mediaterId: res.lawCase.mediater.id || '', //调解人员id
+          registerCourtId: res.lawCase.registerCourt
+            ? res.lawCase.registerCourt.id
+            : '', //审核/登记机构id
+          mediateCourtId: res.lawCase.court ? res.lawCase.court.id : '', //受理/调解机构id
+          mediaterId: res.lawCase.mediater ? res.lawCase.mediater.id : '', //调解人员id
           registerDate: formatDate(res.lawCase.registerDate), //审核登记日期
           mediateTerm: formatDate(res.lawCase.registerDate), //调解限期
           process: res.lawCase.process, //案件进度
@@ -304,30 +327,15 @@ export default {
     },
     // 编辑事件
     edit() {
-      this.isEdit = true
+      this.isEditData = true
     },
     // 返回事件
     back() {
-      this.isEdit = false
+      this.isEditData = false
     },
     // 保存事件
     save() {
-      updateCase({
-        dCaseNo: this.editCaseDetail.dCaseNo,
-        sqCaseNo: this.editCaseDetail.sqCaseNo,
-        briefId: this.editCaseDetail.briefId,
-        isAboutProperty: '',
-        applyStandard: 0, // 只能为数字
-        caseSource: '',
-        registerCourtId: '', //审核/登记机构id
-        mediateCourtId: '', //受理/调解机构id
-        mediaterId: '', //调解人员id
-        registerDate: '', //审核登记日期  只能为时间
-        mediateTerm: '', //调解限期 // 是能为时间
-        process: 0, //案件进度  只能为数字
-        mediateRequest: '', //诉讼请求
-        reason: '' //事实与理由
-      }).then(res => {
+      updateCase(this.editCaseDetail).then(res => {
         if (res.state === 100) {
           this.$message({
             showClose: true,
@@ -336,13 +344,13 @@ export default {
           })
           this.caseId = res.caseId
           this.getCaseDetail()
-          this.isEdit = false
+          this.isEditData = false
         }
       })
     },
     // 取消事件
     cancel() {
-      this.isEdit = false
+      this.isEditData = false
     },
     // 获取案由
     getBrief() {
@@ -366,24 +374,20 @@ export default {
       })
     },
     // 获取调解人员
-    getMediaterUser() {
-      getMediaterUser({ courtId: this.selectmediaterId, pageSize: 1000 }).then(
-        res => {
-          this.mediaterUserData = JSON.parse(
-            JSON.stringify(res.dataPage.content)
-          )
-          this.mediaterUserData.unshift({
-            id: '',
-            name: '请选择'
-          })
-        }
-      )
+    getMediaterUser(id) {
+      getMediaterUser({ courtId: id, pageSize: 1000 }).then(res => {
+        this.mediaterUserData = JSON.parse(JSON.stringify(res.dataPage.content))
+        this.mediaterUserData.unshift({
+          id: '',
+          name: '请选择'
+        })
+      })
     },
     // 选择调解机构触发
     selectMeduater(id) {
       this.editCaseDetail.mediaterId = ''
       this.selectmediaterId = id
-      this.getMediaterUser()
+      this.getMediaterUser(id)
     },
     // 获取进度类型数据
     getProcessType() {

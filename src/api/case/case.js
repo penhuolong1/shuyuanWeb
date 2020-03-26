@@ -52,3 +52,12 @@ export function updateCase(params) {
     data: params
   });
 }
+
+// 查询案件调解协议/证据信息/当事人信息
+export function protocol(params) {
+  return service({
+    url: "/court/protocol/getProtocolByCaseId.jhtml",
+    method: "GET",
+    params
+  });
+}

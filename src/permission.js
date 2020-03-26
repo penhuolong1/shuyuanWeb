@@ -7,31 +7,31 @@ const whiteList = ["/login", "/loginAdmin", "/register", "/resetPwd","/home","/h
 
 // main.js 路由守卫
 router.beforeEach(async (to, from, next) => {
-  console.log("路由拦截", to.path);
-  console.log("用户角色", store.getters.getUserRole)
+  // console.log("路由拦截", to.path);
+  // console.log("用户角色", store.getters.getUserRole)
   const roleType = store.getters.getUserRole || 0
   // 判断是否有角色身份（代表已登录）
   if (roleType > 0) {
-    console.log("已登录，有角色身份");
+    //console.log("已登录，有角色身份");
 
     if (to.path === "/login") {
-      console.log("有角色身份 , 将要去登录页,强制转到后台首页");
+      //console.log("有角色身份 , 将要去登录页,强制转到后台首页");
       next({
         path: "/"
       });
     } else {
-      console.log("有角色身份 , 不是去登录页,");
+      //console.log("有角色身份 , 不是去登录页,");
       await store.dispatch("GetUserInfo");
       next()
     }
   } else {
-    console.log("无角色身份");
+    //console.log("无角色身份");
     if (whiteList.indexOf(to.path) !== -1) {
       // 在免登录白名单，直接进入
-      console.log("在免登录白名单，直接进入");
+      //console.log("在免登录白名单，直接进入");
       next();
     } else {
-      console.log("不在免登录白名单，跳转登录页");
+      //console.log("不在免登录白名单，跳转登录页");
       // 不在免登录白名单，跳转登录页
       next("/login");
     }

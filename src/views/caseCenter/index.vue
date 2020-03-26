@@ -10,12 +10,17 @@
     <tab1
       :menuData="menuData"
       @selectMenu="selectMenu"
+      id="tab1"
     ></tab1>
     <div
       class="main-wrapper"
       style="margin-top: 2px;"
     >
-      <caseInfo :caseId="caseId"></caseInfo>
+      <caseInfo
+        :caseId="caseId"
+        id="caseInfo"
+        :isEdit="idEdit"
+      ></caseInfo>
     </div>
   </div>
 </template>
@@ -41,7 +46,8 @@ export default {
         {
           name: '组织调解'
         }
-      ]
+      ],
+      idEdit: false // 是否处于编辑状态
     }
   },
   components: {
@@ -61,9 +67,14 @@ export default {
     // 查询案件详情
     detailCase(id) {
       this.caseId = id
+      this.idEdit = false
+      document.getElementById('tab1').scrollIntoView()
       console.log(this.caseId)
     },
     addCase() {
+      // 点击添加案件跳转到菜单部分
+      document.getElementById('tab1').scrollIntoView()
+      this.idEdit = true
       console.log('添加案件')
     }
   }

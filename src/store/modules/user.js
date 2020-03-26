@@ -27,7 +27,7 @@ const user = {
   },
   actions: {
     GetUserInfo({commit}) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         userInfo().then(res => {
           if (res.state == 100) {
             const data = res
