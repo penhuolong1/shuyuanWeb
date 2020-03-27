@@ -8,22 +8,33 @@
           :isNeedAdd="true"
           @add="add"
           @del="del"
+          @edit="edit"
+          @cancel="cancel"
           :isEdit="isEdit"
         ></editBtn>
       </div>
     </div>
     <div class="person-info">
-      <div class="person-info-left">
+      <div
+        class="person-info-left"
+        v-if="litigantData"
+      >
         <personForm
           :personType="personType"
           :isEdit="isEdit"
           :isCaseCenter="true"
           :index="index"
-          :litigant="litigant"
+          :litigant="litigantData"
         ></personForm>
       </div>
-      <div class="person-info-right">
-        <meterials></meterials>
+      <div
+        class="person-info-right"
+        v-if="isShow"
+      >
+        <meterials
+          :maxImgNum="2"
+          :imgUrls="imgUrls"
+        ></meterials>
       </div>
     </div>
   </div>
@@ -46,7 +57,10 @@ export default {
         1: '申请人',
         2: '代理人',
         3: '被申请人'
-      }
+      },
+      litigantData: null, //接收受理人数据
+      imgUrls: [],
+      isShow: false
     }
   },
   props: {
@@ -59,13 +73,21 @@ export default {
     index: null, //表示当前为第几个受理人
     litigant: null //组件传来的代理人信息
   },
+  watch: {
+    litigant() {
+      this.getImgUrl()
+    }
+  },
   components: {
     personForm,
     titleIcon,
     editBtn,
     meterials
   },
-  created() {},
+  created() {
+    this.litigantData = this.litigant
+    this.getImgUrl()
+  },
   mounted() {},
   methods: {
     add() {
@@ -73,6 +95,25 @@ export default {
     },
     del() {
       this.$emit('del')
+    },
+    edit() {
+      this.isEdit = true
+    },
+    cancel() {
+      this.isEdit = false
+    },
+    getImgUrl() {
+      if (!this.litigantData) {
+        this.imgUrls = []
+        return
+      }
+      if (this.litigantData.frontImage) {
+        this.imgUrls.push(this.litigantData.frontImage)
+      }
+      if (this.litigantData.backImage) {
+        this.imgUrls.push(this.litigantData.backImage)
+      }
+      this.isShow = true
     }
   }
 }

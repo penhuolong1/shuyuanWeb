@@ -76,10 +76,14 @@ export function addEvidence(params) {
  * 上传图片
  * file 图片文件
  */
-export function uploadImg(file) {
+export function uploadImg(param) {
   return service({
     url: "/court/wxRegister/uploadFrontImage.jhtml",
     method: "POST",
-    data: file
+    header: {
+      "Content-Type": "multipart/form-data"
+    },
+    name: 'file',
+    data:param
   });
 }

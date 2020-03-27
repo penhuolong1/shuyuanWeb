@@ -56,10 +56,10 @@
           placeholder="请选择"
         >
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in identypeData"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
           >
           </el-option>
         </el-select>
@@ -136,6 +136,7 @@
 </template>
 
 <script>
+import { IDENTITYMAP } from '@/utils/constVal.js'
 export default {
   data() {
     return {
@@ -168,7 +169,16 @@ export default {
         2: '代理人',
         3: '被申请人'
       },
-      formData: null //表单数据
+      identypeData: [], //身份证类型
+      formData: null, //表单数据
+      paramsData: {
+        lawCaseId: null, //案件ID,
+        name: null, // 姓名
+        identityType: null, //身份证类别 1.自然人-身份证；2法人-统一信用代码
+        identityCard: null, //身份证号
+        sex: null, // 性别
+        nation: null // 民族
+      } //提交所需要的对象
     }
   },
   watch: {
@@ -200,12 +210,25 @@ export default {
   },
   components: {},
   created() {
-    console.log('-------litigant-----')
-    console.log(this.litigant)
     this.formData = this.litigant
+    this.getIdentypeData()
   },
   mounted() {},
-  methods: {}
+  methods: {
+    getIdentypeData() {
+      for (let key in IDENTITYMAP) {
+        this.identypeData.push({
+          id: key,
+          name: IDENTITYMAP[key]
+        })
+      }
+    },
+    getParamsData(data) {
+      if (data) {
+        return
+      }
+    }
+  }
 }
 </script>
 
