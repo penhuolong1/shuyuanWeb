@@ -7,95 +7,135 @@
       <div class="search-item">
         <div class="search-label">全部: </div>
         <div class="search-content">
-          <el-select v-model="listCaseParams.year"
-                     placeholder="请选择收案年度"
-                     @change="searchCardList">
-            <el-option v-for="(item, index) in yearSelectData"
-                       :key="index"
-                       :value="item.value"
-                       :label="item.label">
+          <el-select
+            v-model="listCaseParams.year"
+            placeholder="请选择收案年度"
+            @change="searchCardList"
+          >
+            <el-option
+              v-for="(item, index) in yearSelectData"
+              :key="index"
+              :value="item.value"
+              :label="item.label"
+            >
             </el-option>
           </el-select>
-          <el-input placeholder="法院代字"
-                    v-model="listCaseParams.courtStr"
-                    @keyup.enter.native="searchCardList">
+          <el-input
+            placeholder="法院代字"
+            v-model="listCaseParams.courtStr"
+            @keyup.enter.native="searchCardList"
+          >
           </el-input>
-          <el-input placeholder="类型代字"
-                    v-model="listCaseParams.typeStr"
-                    @keyup.enter.native="searchCardList">
+          <el-input
+            placeholder="类型代字"
+            v-model="listCaseParams.typeStr"
+            @keyup.enter.native="searchCardList"
+          >
           </el-input>
           <div class="input-append">
-            <el-input placeholder="案件编号"
-                      v-model="listCaseParams.caseNoStr"
-                      @keyup.enter.native="searchCardList">
+            <el-input
+              placeholder="案件编号"
+              v-model="listCaseParams.caseNoStr"
+              @keyup.enter.native="searchCardList"
+            >
             </el-input>
             <div class="append">号</div>
           </div>
         </div>
       </div>
-      <search-btn @search="search"
-                  @add="add"
-                  @exportData="exportData"></search-btn>
+      <search-btn
+        @search="search"
+        @add="add"
+        @exportData="exportData"
+      ></search-btn>
     </div>
-    <div class="tab-box"
-         v-if="isTable">
-      <tab :tabData="tabData"
-           @selectTab="selectTab"></tab>
+    <div
+      class="tab-box"
+      v-if="isTable"
+    >
+      <tab
+        :tabData="tabData"
+        @selectTab="selectTab"
+      ></tab>
     </div>
-    <div class="table-wrapper"
-         v-if="isTable">
-      <el-table v-loading="loading"
-                ref="multipleTable"
-                :data="listCaseData"
-                tooltip-effect="dark"
-                style="width: 100%"
-                class="my-table">
-        <el-table-column label=""
-                         width="50">
+    <div
+      class="table-wrapper"
+      v-if="isTable"
+    >
+      <el-table
+        v-loading="loading"
+        ref="multipleTable"
+        :data="listCaseData"
+        tooltip-effect="dark"
+        style="width: 100%"
+        class="my-table"
+      >
+        <el-table-column
+          label=""
+          width="50"
+        >
           <template slot-scope="scope">
-            <el-dropdown trigger="click"
-                         placement="bottom-start">
+            <el-dropdown
+              trigger="click"
+              placement="bottom-start"
+            >
               <span class="el-dropdown-link">
                 <el-checkbox></el-checkbox>
               </span>
-              <el-dropdown-menu slot="dropdown"
-                                class="table-dropdown">
-                <el-dropdown-item icon="el-icon-plus"
-                                  @click.native="detailCase(scope.row.id)">
+              <el-dropdown-menu
+                slot="dropdown"
+                class="table-dropdown"
+              >
+                <el-dropdown-item
+                  icon="el-icon-plus"
+                  @click.native="detailCase(scope.row.id)"
+                >
                   查看
                 </el-dropdown-item>
-                <el-dropdown-item icon="el-icon-delete"
-                                  @click.native="delCase(scope.row.id)">
+                <el-dropdown-item
+                  icon="el-icon-delete"
+                  @click.native="delCase(scope.row.id)"
+                >
                   删除
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
         </el-table-column>
-        <el-table-column label="序号"
-                         prop="num"
-                         width="80">
+        <el-table-column
+          label="序号"
+          prop="num"
+          width="80"
+        >
         </el-table-column>
-        <el-table-column prop="dCaseNo"
-                         label="溯源登记号">
+        <el-table-column
+          prop="dCaseNo"
+          label="溯源登记号"
+        >
         </el-table-column>
         <el-table-column label="溯源调解号">
           <template slot-scope="scope">
             <span class="color-gray">{{ scope.row.sqCaseNo }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="briefName"
-                         label="纠纷事由">
+        <el-table-column
+          prop="briefName"
+          label="纠纷事由"
+        >
         </el-table-column>
-        <el-table-column prop="briefName"
-                         label="申请人/被申请人">
+        <el-table-column
+          prop="briefName"
+          label="申请人/被申请人"
+        >
           <template slot-scope="scope">
             <p><span class="table-circle table-theme-color"></span>{{scope.row.accept}}</p>
             <p><span class="table-circle"></span>{{ scope.row.byaccept }}</p>
           </template>
         </el-table-column>
-        <el-table-column prop="briefName"
-                         label="涉财产/数额">
+        <el-table-column
+          prop="briefName"
+          label="涉财产/数额"
+        >
           <template slot-scope="scope">
             <p>{{scope.row.isAP ? '是':'否'}}</p>
             <p>{{ scope.row.applyStandard }}</p>
@@ -106,8 +146,10 @@
             <span class="color-gray">{{ scope.row.courtName }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="mediater"
-                         label="调解员">
+        <el-table-column
+          prop="mediater"
+          label="调解员"
+        >
         </el-table-column>
         <el-table-column label="受理时间">
           <template slot-scope="scope">
@@ -126,28 +168,38 @@
         </el-table-column>
         <el-table-column label="临期预警">
           <template slot-scope="scope">
-            <span class="table-circle"
-                  :class="scope.row.degree"></span>
+            <span
+              class="table-circle"
+              :class="scope.row.degree"
+            ></span>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div class="page-wrapper"
-         v-if="isTable">
-      <el-pagination background
-                     :page-size="listCaseParams.pageSize"
-                     :pager-count="5"
-                     layout="prev, pager, next"
-                     :total="listCastTotal"
-                     @prev-click="caseListPrev"
-                     @next-click="caseListNext"
-                     @current-change="caseListPage">
+    <div
+      class="page-wrapper"
+      v-if="isTable"
+    >
+      <el-pagination
+        background
+        :page-size="listCaseParams.pageSize"
+        :pager-count="5"
+        layout="prev, pager, next"
+        :total="listCastTotal"
+        @prev-click="caseListPrev"
+        @next-click="caseListNext"
+        @current-change="caseListPage"
+      >
       </el-pagination>
     </div>
-    <div class="editTable"
-         v-if="!isTable">
-      <caseDetail :caseId="caseId"
-                  :lawCaseData="lawCaseData"></caseDetail>
+    <div
+      class="editTable"
+      v-if="!isTable"
+    >
+      <caseDetail
+        :caseId="caseId"
+        :lawCaseData="lawCaseData"
+      ></caseDetail>
     </div>
   </div>
 </template>
@@ -158,7 +210,7 @@ import caseDetail from '@/components/case/caseDetail'
 import tab from '@/components/tab/tab'
 import { listCase, delCase, detailCase } from '@/api/case/case.js'
 export default {
-  data () {
+  data() {
     return {
       listCaseParams: {
         pageNum: 1,
@@ -208,13 +260,13 @@ export default {
     tab,
     caseDetail
   },
-  created () {
+  created() {
     this.getCaseListData()
     this.getYearSelectData()
   },
   watch: {
     lawCaseData: {
-      handler () {
+      handler() {
         console.log('---把列表详情传递出去----')
         console.log(this.lawCaseData)
         this.$emit('getLawCaseData', this.lawCaseData)
@@ -223,10 +275,10 @@ export default {
     }
   },
   methods: {
-    search () {
+    search() {
       this.searchCardList()
     },
-    add () {
+    add() {
       console.log('--add--')
       if (this.isCaseCenter == 1) {
         this.$emit('add')
@@ -235,11 +287,11 @@ export default {
         this.isTable = false
       }
     },
-    exportData () {
+    exportData() {
       console.log('--exportData--')
     },
     // 获取案件列表
-    getCaseListData () {
+    getCaseListData() {
       this.loading = true
       listCase(this.listCaseParams).then(res => {
         this.listCastTotal = res.data.total
@@ -260,9 +312,9 @@ export default {
         this.loading = false
       })
     },
-    handleSelectionChange () { },
+    handleSelectionChange() {},
     // 获取收案年度的下拉框数据
-    getYearSelectData () {
+    getYearSelectData() {
       let nowYear = new Date().getFullYear()
       for (let i = 0; i <= 3; i++) {
         let obj = {
@@ -273,27 +325,27 @@ export default {
       }
     },
     // 搜索案件列表
-    searchCardList () {
+    searchCardList() {
       this.getCaseListData()
     },
     // 上一页
-    caseListPrev (index) {
+    caseListPrev(index) {
       console.log('----上一页---------')
       this.listCaseParams.pageNum = index
       this.searchCardList()
     },
     // 下一页
-    caseListNext (index) {
+    caseListNext(index) {
       this.listCaseParams.pageNum = index
       this.searchCardList()
     },
     // 选择第几页
-    caseListPage (index) {
+    caseListPage(index) {
       this.listCaseParams.pageNum = index
       this.searchCardList()
     },
     // 选择菜单切换栏
-    selectTab (index) {
+    selectTab(index) {
       this.listCaseParams.examine = null
       this.listCaseParams.mediate = null
       switch (index) {
@@ -317,7 +369,7 @@ export default {
       this.searchCardList()
     },
     // 点击获取caseId 并切换判断条件展示详情部分隐藏列表部分
-    detailCase (id) {
+    detailCase(id) {
       this.getdetailCase(id)
       if (this.isCaseCenter == 1) {
         this.$emit('detailCase', id)
@@ -327,7 +379,7 @@ export default {
       }
     },
     // 删除案件
-    delCase (id) {
+    delCase(id) {
       this.$confirm('是否确认删除')
         .then(() => {
           delCase({ caseId: id }).then(res => {
@@ -339,10 +391,10 @@ export default {
             this.searchCardList()
           })
         })
-        .catch(() => { })
+        .catch(() => {})
     },
     // 获取案件详情
-    getdetailCase (id) {
+    getdetailCase(id) {
       detailCase({ lawCaseId: id }).then(res => {
         this.lawCaseData = res.lawCase
       })
@@ -352,7 +404,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "~@/styles/variables.scss";
+@import '~@/styles/variables.scss';
 .tab-box {
   margin-top: 30px;
 }

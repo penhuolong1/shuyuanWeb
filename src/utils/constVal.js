@@ -1,10 +1,10 @@
 //全局常量文件
-const SYS_NAME = "SHUYUAN-sys";
-const ROLEMAP = { //角色类型map
+export const SYS_NAME = "SHUYUAN-sys";
+export const ROLEMAP = { //角色类型map
   1: "调解机构",
   2: "调解员"
 }
-const PROCESSMAP = { // 案件进程map
+export const PROCESSMAP = { // 案件进程map
   0: "未申请",
   1: "已申请",
   2: "已受理", 
@@ -16,18 +16,25 @@ const PROCESSMAP = { // 案件进程map
   8: "调解成功（已签字）",
   9: "不受理"
 }
-const IDENTITYMAP = { //身份证类别：1.自然人-身份证；2法人-统一信用代码
+export const IDENTITYMAP = { //身份证类别：1.自然人-身份证；2法人-统一信用代码
   1: "自然人",
   2: "法人"
 }
-const SEXMAP = { //性别类型 0男 1女
+export const SEXMAP = { //性别类型 0男 1女
   0: "男",
   1: "女"
 }
-export {
-  SYS_NAME,
-  ROLEMAP,
-  PROCESSMAP,
-  IDENTITYMAP,
-  SEXMAP
-};
+export const AGENTTYPEMAP = { //代理人类型
+  1: "律师",
+  2: "法律工作者",
+  3: "单位工作人员",
+  4: "近亲属",
+  5: "公民"
+}
+export const LITIGATIONMAP = { //诉讼地位
+  1: "原告", 
+  2: "被告",
+  3: "第三人",
+  4: "申请人",
+  5: "被申请人"
+}

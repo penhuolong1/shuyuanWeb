@@ -1,108 +1,134 @@
 <template>
   <div>
     <!-- 详情部分 -->
-    <div class="form-table"
-         v-if="!isEdit">
+    <div
+      class="form-table"
+      v-if="!isEdit&&formData"
+    >
       <div class="item item-value border-right">{{personMap[personType]}}</div>
       <div class="item item-value item-style">
-        <span></span>
+        <span>{{formData.typeChar}}</span>
       </div>
       <div class="item item-key">姓名</div>
       <div class="item item-value border-right">
-        <span></span>
+        <span>{{formData.name}}</span>
       </div>
       <div class="item item-key">民族</div>
       <div class="item item-value">
-        <span></span>
+        <span>{{formData.nation}}</span>
       </div>
       <div class="item item-key">性别</div>
       <div class="item item-value border-right">
-        <span></span>
+        <span>{{formData.sex}}</span>
       </div>
-      <div class="item item-key">年龄</div>
+      <div class="item item-key">出生日期</div>
       <div class="item item-value">
-        <span></span>
+        <span>{{formData.birthday}}</span>
       </div>
-      <div class="item item-value">{{personType != 2 ? '证件号码':'证件号码&律师职业证号'}}</div>
+      <div class="item item-value">证件号码</div>
       <div class="item item-value item-style1">
-        <span></span>
+        <span>{{formData.identityCard}}</span>
       </div>
       <div class="item item-key">联系号码</div>
       <div class="item item-key item-style2">
-        <span></span>
+        <span>{{formData.phone}}</span>
       </div>
       <div class="item item-value">住址</div>
       <div class="item item-value item-style3">
-        <span></span>
+        <span>{{formData.address}}</span>
       </div>
       <div class="item item-key">工作单位或职务</div>
       <div class="item item-key item-style4">
-        <span></span>
+        <span>{{formData.employer}}</span>
       </div>
     </div>
     <!-- 详情部分结束 -->
 
     <!-- 编辑部分 -->
-    <div class="form-table"
-         v-if="isEdit">
+    <div
+      class="form-table"
+      v-if="isEdit"
+    >
       <div class="item item-value border-right">{{personMap[personType]}}</div>
       <div class="item item-value item-style">
-        <el-select v-model="value"
-                   placeholder="请选择">
-          <el-option v-for="item in options"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value">
+        <el-select
+          v-model="value"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
           </el-option>
         </el-select>
       </div>
       <div class="item item-key">姓名</div>
       <div class="item item-value border-right">
-        <el-input v-model="input"
-                  placeholder="请输入内容"></el-input>
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+        ></el-input>
       </div>
       <div class="item item-key">民族</div>
       <div class="item item-value">
-        <el-input v-model="input"
-                  placeholder="请输入内容"></el-input>
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+        ></el-input>
       </div>
       <div class="item item-key">性别</div>
       <div class="item item-value border-right">
-        <el-select v-model="value"
-                   placeholder="请选择">
-          <el-option v-for="item in options"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value">
+        <el-select
+          v-model="value"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
           </el-option>
         </el-select>
       </div>
       <div class="item item-key">年龄</div>
       <div class="item item-value">
-        <el-input v-model="input"
-                  type="number"
-                  placeholder="请输入内容"></el-input>
+        <el-input
+          v-model="input"
+          type="number"
+          placeholder="请输入内容"
+        ></el-input>
       </div>
       <div class="item item-value">{{personType != 2 ? '证件号码':'证件号码&律师职业证号'}}</div>
       <div class="item item-value item-style1">
-        <el-input v-model="input"
-                  placeholder="请输入内容"></el-input>
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+        ></el-input>
       </div>
       <div class="item item-key">联系号码</div>
       <div class="item item-key item-style2">
-        <el-input v-model="input"
-                  type="number"
-                  placeholder="请输入内容"></el-input>
+        <el-input
+          v-model="input"
+          type="number"
+          placeholder="请输入内容"
+        ></el-input>
       </div>
       <div class="item item-value">住址</div>
       <div class="item item-value item-style3">
-        <el-input v-model="input"
-                  placeholder="请输入内容"></el-input>
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+        ></el-input>
       </div>
       <div class="item item-key">工作单位或职务</div>
       <div class="item item-key item-style4">
-        <el-input v-model="input"
-                  placeholder="请输入内容"></el-input>
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+        ></el-input>
       </div>
     </div>
     <!-- 编辑部分结束 -->
@@ -110,9 +136,8 @@
 </template>
 
 <script>
-import { IDENTITYMAP, SEXMAP } from '@/utils/constVal.js'
 export default {
-  data () {
+  data() {
     return {
       input: '',
       options: [
@@ -143,15 +168,13 @@ export default {
         2: '代理人',
         3: '被申请人'
       },
-      litigants: null, //受理人信息
       formData: null //表单数据
     }
   },
   watch: {
     litigant: {
-      handler () {
-        console.log('---personFor中组件传来的受理人信息----')
-        console.log(this.litigant)
+      handler() {
+        this.formData = this.litigant
       },
       deep: true
     }
@@ -167,53 +190,22 @@ export default {
       type: Boolean,
       value: true
     },
-    litigant: null //组件传来的受理人信息
+    litigant: null, //组件传来的受理人信息
+    isAgent: {
+      // 是否是代理人的表单
+      //是否代理人
+      type: Boolean,
+      value: false
+    }
   },
   components: {},
-  created () { },
-  mounted () { },
-  methods: {
-    // 处理受理人数据
-    deallItigants () {
-      let proposerList = [] //申请人数组
-      let agentList = [] //代理人数组
-      let respondentList = [] // 被申请人数组
-      if (this.litigants && this.litigants.length > 0) {
-        this.litigants.forEach(item => {
-          if (item.litigationStatus) {
-            if (item.litigationStatus.name == '申请人') {
-              proposerList.push(item)
-            }
-            if (item.litigationStatus.name == '被申请人') {
-              respondentList.push(item)
-            }
-          }
-          if (item.lawyer && item.lawyer.length > 0) {
-            item.lawyer.forEach(item1 => {
-              agentList.push(item1)
-            })
-          }
-        })
-      }
-      // 假如是申请人
-      if (this.personType == 1) {
-        this.formData = proposerList[this.index]
-      } else if (this.personType == 2) {
-        this.formData = agentList[this.index]
-      } else if (this.personType == 3) {
-        this.formData = respondentList[this.index]
-      }
-      console.log('-------申请人-------')
-      console.log(proposerList)
-      console.log('-------代理人-------')
-      console.log(agentList)
-      console.log('-------被申请人-------')
-      console.log(respondentList)
-
-      console.log('---------结果----------')
-      console.log(this.formData)
-    }
-  }
+  created() {
+    console.log('-------litigant-----')
+    console.log(this.litigant)
+    this.formData = this.litigant
+  },
+  mounted() {},
+  methods: {}
 }
 </script>
 

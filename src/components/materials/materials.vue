@@ -1,4 +1,5 @@
 <template>
+  <!-- 上传图片组件 -->
   <div>
     <div class="mater-upload-wrapper">
       <div class="content">
@@ -19,9 +20,19 @@ export default {
   data() {
     return {}
   },
-  props: {},
+  props: {
+    maxImgNum: null, //最大上传图片数
+    imgUrls: null, // 父组件传来的图片数据
+    isEdit: {
+      type: Boolean,
+      value: false
+    } // 是否编辑状态
+  },
   components: {},
-  created() {},
+  created() {
+    console.log('图片地址')
+    console.log(this.imgUrls)
+  },
   mounted() {},
   methods: {}
 }

@@ -2,15 +2,19 @@
   <div>
     <div class="header">
       <span>案件信息</span>
-      <editBtn @edit="edit"
-               @cancel="cancel"
-               @save="save"
-               @back="back"
-               :isEdit="isEditData"></editBtn>
+      <editBtn
+        @edit="edit"
+        @cancel="cancel"
+        @save="save"
+        @back="back"
+        :isEdit="isEditData"
+      ></editBtn>
     </div>
     <!-- 详情部分 -->
-    <div class="form-table"
-         v-if="!isEditData && detailCaseData">
+    <div
+      class="form-table"
+      v-if="!isEditData && detailCaseData"
+    >
       <div class="item item-key">登记号</div>
       <div class="item item-value">
         <span>{{detailCaseData.dCaseNo}}
@@ -74,44 +78,60 @@
     </div>
     <!-- 详情部分结束 -->
     <!-- 编辑部分 -->
-    <div class="form-table"
-         v-if="isEditData">
+    <div
+      class="form-table"
+      v-if="isEditData"
+    >
       <div class="item item-key">登记号</div>
       <div class="item item-value">
-        <el-input v-model="editCaseDetail.dCaseNo"
-                  placeholder="登记号"></el-input>
+        <el-input
+          v-model="editCaseDetail.dCaseNo"
+          placeholder="登记号"
+        ></el-input>
       </div>
       <div class="item item-key">调解号</div>
       <div class="item item-value">
-        <el-input v-model="editCaseDetail.sqCaseNo"
-                  placeholder="调解号"></el-input>
+        <el-input
+          v-model="editCaseDetail.sqCaseNo"
+          placeholder="调解号"
+        ></el-input>
       </div>
       <div class="item item-key">纠纷事由</div>
       <div class="item item-value">
-        <el-select v-model="editCaseDetail.briefId"
-                   placeholder="请选择">
-          <el-option v-for="items in briefData"
-                     :key="items.id"
-                     :label="items.name"
-                     :value="items.id">
+        <el-select
+          v-model="editCaseDetail.briefId"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="items in briefData"
+            :key="items.id"
+            :label="items.name"
+            :value="items.id"
+          >
           </el-option>
         </el-select>
       </div>
       <div class="item item-key">涉财产</div>
       <div class="item item-value">
-        <el-select v-model="editCaseDetail.isAboutProperty"
-                   placeholder="请选择">
-          <el-option v-for="(items,index) in aboutPropertyOptions"
-                     :key="index"
-                     :label="items.label"
-                     :value="items.value">
+        <el-select
+          v-model="editCaseDetail.isAboutProperty"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="(items,index) in aboutPropertyOptions"
+            :key="index"
+            :label="items.label"
+            :value="items.value"
+          >
           </el-option>
         </el-select>
       </div>
       <div class="item item-key">述求金额(元)</div>
       <div class="item item-value">
-        <el-input v-model="editCaseDetail.applyStandard"
-                  placeholder="述求金额"></el-input>
+        <el-input
+          v-model="editCaseDetail.applyStandard"
+          placeholder="述求金额"
+        ></el-input>
       </div>
       <div class="item item-key">案件来源</div>
       <div class="item item-value">
@@ -119,60 +139,80 @@
       </div>
       <div class="item item-key">审核/登记机构</div>
       <div class="item item-value">
-        <el-select v-model="editCaseDetail.registerCourtId"
-                   placeholder="请选择">
-          <el-option v-for="item in mediaterData"
-                     :key="item.id"
-                     :label="item.name"
-                     :value="item.id">
+        <el-select
+          v-model="editCaseDetail.registerCourtId"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in mediaterData"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
           </el-option>
         </el-select>
       </div>
       <div class="item item-key">调解机构</div>
       <div class="item item-value">
-        <el-select v-model="editCaseDetail.mediateCourtId"
-                   placeholder="请选择"
-                   @change="selectMeduater">
-          <el-option v-for="item in mediaterData"
-                     :key="item.id"
-                     :label="item.name"
-                     :value="item.id">
+        <el-select
+          v-model="editCaseDetail.mediateCourtId"
+          placeholder="请选择"
+          @change="selectMeduater"
+        >
+          <el-option
+            v-for="item in mediaterData"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
           </el-option>
         </el-select>
       </div>
       <div class="item item-key">调解员</div>
       <div class="item item-value">
-        <el-select v-model="editCaseDetail.mediaterId"
-                   placeholder="请选择">
-          <el-option v-for="item in mediaterUserData"
-                     :key="item.id"
-                     :label="item.name"
-                     :value="item.id">
+        <el-select
+          v-model="editCaseDetail.mediaterId"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in mediaterUserData"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
           </el-option>
         </el-select>
       </div>
       <div class="item item-key">审核/登记时间</div>
       <div class="item item-value">
-        <el-date-picker v-model="editCaseDetail.registerDate"
-                        type="datetime"
-                        placeholder="选择审核/登记时间">
+        <el-date-picker
+          v-model="editCaseDetail.registerDate"
+          type="datetime"
+          placeholder="选择审核/登记时间"
+        >
         </el-date-picker>
       </div>
       <div class="item item-key">调解期限</div>
       <div class="item item-value">
-        <el-date-picker v-model="editCaseDetail.mediateTerm"
-                        type="datetime"
-                        placeholder="选择调解期限">
+        <el-date-picker
+          v-model="editCaseDetail.mediateTerm"
+          type="datetime"
+          placeholder="选择调解期限"
+        >
         </el-date-picker>
       </div>
       <div class="item item-key">当前状态</div>
       <div class="item item-value">
-        <el-select v-model="editCaseDetail.process"
-                   placeholder="请选择">
-          <el-option v-for="item in processTypeData"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value">
+        <el-select
+          v-model="editCaseDetail.process"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in processTypeData"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
           </el-option>
         </el-select>
       </div>
@@ -188,7 +228,7 @@ import { getMediater, getMediaterUser } from '@/api/mediater/mediater.js'
 import editBtn from '@/components/button/editButton'
 import { PROCESSMAP } from '@/utils/constVal.js'
 export default {
-  data () {
+  data() {
     return {
       detailCaseData: {}, // 案件详情
       aboutPropertyOptions: [
@@ -228,28 +268,27 @@ export default {
     lawCaseData: null // 列表传递过来的案件详情
   },
   watch: {
-    isEdit () {
+    isEdit() {
       this.isEditData = this.isEdit
     },
     lawCaseData: {
-      handler () {
+      handler() {
         this.getCaseDetail()
       },
       deep: true
     }
   },
-  created () {
+  created() {
     this.getBrief()
     this.getMediater()
     this.getProcessType()
   },
-  mounted () { },
+  mounted() {},
   methods: {
     // 获取案件详情
-    getCaseDetail () {
+    getCaseDetail() {
       this.detailCaseData = this.lawCaseData
-      this.detailCaseData.processChar =
-        PROCESSMAP[this.detailCaseData.process]
+      this.detailCaseData.processChar = PROCESSMAP[this.detailCaseData.process]
       if (this.lawCaseData.court) {
         this.getMediaterUser(this.lawCaseData.court.id)
       }
@@ -265,7 +304,9 @@ export default {
           ? this.lawCaseData.registerCourt.id
           : '', //审核/登记机构id
         mediateCourtId: this.lawCaseData.court ? this.lawCaseData.court.id : '', //受理/调解机构id
-        mediaterId: this.lawCaseData.mediater ? this.lawCaseData.mediater.id : '', //调解人员id
+        mediaterId: this.lawCaseData.mediater
+          ? this.lawCaseData.mediater.id
+          : '', //调解人员id
         registerDate: formatDate(this.lawCaseData.registerDate), //审核登记日期
         mediateTerm: formatDate(this.lawCaseData.registerDate), //调解限期
         process: this.lawCaseData.process, //案件进度
@@ -274,15 +315,15 @@ export default {
       }
     },
     // 编辑事件
-    edit () {
+    edit() {
       this.isEditData = true
     },
     // 返回事件
-    back () {
+    back() {
       this.isEditData = false
     },
     // 保存事件
-    save () {
+    save() {
       updateCase(this.editCaseDetail).then(res => {
         if (res.state === 100) {
           this.$message({
@@ -297,11 +338,11 @@ export default {
       })
     },
     // 取消事件
-    cancel () {
+    cancel() {
       this.isEditData = false
     },
     // 获取案由
-    getBrief () {
+    getBrief() {
       // 把pageSize设大用于做select的数据
       brief({ pageSize: 1000 }).then(res => {
         this.briefData = JSON.parse(JSON.stringify(res.briefPage.content))
@@ -312,7 +353,7 @@ export default {
       })
     },
     // 获取调解机构
-    getMediater () {
+    getMediater() {
       getMediater({ pageSize: 1000 }).then(res => {
         this.mediaterData = JSON.parse(JSON.stringify(res.content))
         this.mediaterData.unshift({
@@ -322,7 +363,7 @@ export default {
       })
     },
     // 获取调解人员
-    getMediaterUser (id) {
+    getMediaterUser(id) {
       getMediaterUser({ courtId: id, pageSize: 1000 }).then(res => {
         this.mediaterUserData = JSON.parse(JSON.stringify(res.dataPage.content))
         this.mediaterUserData.unshift({
@@ -332,13 +373,13 @@ export default {
       })
     },
     // 选择调解机构触发
-    selectMeduater (id) {
+    selectMeduater(id) {
       this.editCaseDetail.mediaterId = ''
       this.selectmediaterId = id
       this.getMediaterUser(id)
     },
     // 获取进度类型数据
-    getProcessType () {
+    getProcessType() {
       for (let key in PROCESSMAP) {
         this.processTypeData.push({
           value: parseInt(key),

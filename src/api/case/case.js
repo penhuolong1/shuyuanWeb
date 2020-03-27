@@ -40,12 +40,6 @@ export function brief(params) {
 
 // 添加编辑案件
 export function updateCase(params) {
-  // let data = {}
-  // if (params) {
-  //   for (let key in params) {
-  //     if (params.)
-  //   }
-  // }
   return service({
     url: "/web/case/updateCaseInfo.jhtml",
     method: "POST",
@@ -59,5 +53,33 @@ export function protocol(params) {
     url: "/court/protocol/getProtocolByCaseId.jhtml",
     method: "GET",
     params
+  });
+}
+
+/**
+ * 上传证据
+ * @param {Object}} params 
+ * litigantId 当事人Id
+ * evidenceName 证据名称
+ * objectOfProof 证明对象
+ * urls 多个地址都好隔开
+ */
+export function addEvidence(params) {
+  return service({
+    url: "/court/evidence/addEvidence.jhtml",
+    method: "POST",
+    data: params
+  });
+}
+
+/**
+ * 上传图片
+ * file 图片文件
+ */
+export function uploadImg(file) {
+  return service({
+    url: "/court/wxRegister/uploadFrontImage.jhtml",
+    method: "POST",
+    data: file
   });
 }
