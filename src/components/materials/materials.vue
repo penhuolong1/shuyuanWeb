@@ -1,50 +1,36 @@
 <template>
   <!-- 上传图片组件 -->
   <div class="upload-wrapper">
-    <input
-      type="file"
-      ref="file"
-      style="display:none;"
-      @change="getFile($event)"
-    >
+    <input type="file"
+           ref="file"
+           style="display:none;"
+           @change="getFile($event)">
     <div class="mater-upload-wrapper">
-      <div
-        class="content image-show-wrapper"
-        v-if="isEdit"
-      >
-        <div
-          class="upload-content"
-          v-if="imgsUrlData.length < maxImgNum"
-          @click="uploadImg()"
-        >
-          <img
-            src="@/assets/img/materUpload.png"
-            alt=""
-            style="width: 115px;height: 95px;"
-          >
+      <div class="content image-show-wrapper"
+           v-if="isEdit">
+        <div class="upload-content"
+             v-if="imgsUrlData.length < maxImgNum"
+             @click="uploadImg()">
+          <img src="@/assets/img/materUpload.png"
+               alt=""
+               style="width: 115px;height: 95px;">
           <div class="tip">png、jpg、doc&pdf最大10MB</div>
           <div class="title">身份证明材料复印件上传</div>
         </div>
-        <div
-          class="img-wrapper"
-          v-for="(item, index) in imgsUrlData"
-          :key="index"
-        >
+        <div class="img-wrapper"
+             v-for="(item, index) in imgsUrlData"
+             :key="index">
           <img :src="item" />
           <div class="del-icon">
             <i class="el-icon-error"></i>
           </div>
         </div>
       </div>
-      <div
-        class="image-show-wrapper"
-        v-if="!isEdit"
-      >
-        <div
-          class="img-wrapper"
-          v-for="(item, index) in imgsUrlData"
-          :key="index"
-        >
+      <div class="image-show-wrapper"
+           v-if="!isEdit">
+        <div class="img-wrapper"
+             v-for="(item, index) in imgsUrlData"
+             :key="index">
           <img :src="item" />
           <div class="del-icon">
             <i class="el-icon-error"></i>
@@ -59,7 +45,7 @@
 import { uploadImg } from '@/api/case/case.js'
 import pic1 from '@/assets/img/partyInfo.png'
 export default {
-  data() {
+  data () {
     return {
       imgsUrlData: [], // 接收组件传过来的项目地址
       isEdit: true
@@ -71,24 +57,24 @@ export default {
   },
   watch: {
     imgUrls: {
-      handler() {
+      handler () {
         // this.imgsUrlData = this.imgUrls
       },
       deep: true
     }
   },
   components: {},
-  created() {
+  created () {
     console.log('图片地址')
     console.log(this.imgUrls)
     // this.imgsUrlData = this.imgUrls
   },
-  mounted() {},
+  mounted () { },
   methods: {
-    uploadImg() {
+    uploadImg () {
       this.$refs.file.dispatchEvent(new MouseEvent('click'))
     },
-    getFile(e) {
+    getFile (e) {
       let file = e.target.files[0]
       let param = new FormData() //创建form对象
       param.append('file', file) //通过append向form对象添加数据
@@ -110,7 +96,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '~@/styles/variables.scss';
+@import "~@/styles/variables.scss";
 .upload-wrapper {
   height: 100%;
 }
