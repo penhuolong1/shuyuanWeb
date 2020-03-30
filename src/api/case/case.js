@@ -84,6 +84,60 @@ export function uploadImg(param) {
       "Content-Type": "multipart/form-data"
     },
     name: 'file',
-    data:param
+    data: param
+  });
+}
+
+// 添加当事人
+export function addLitigant(params) {
+  return service({
+    url: "/court/litigant/addLitigant.jhtml",
+    method: "POST",
+    params
+  });
+}
+
+// 修改当事人
+export function editLitigant(params) {
+  return service({
+    url: "/court/litigant/editLitigant.jhtml",
+    method: "POST",
+    params
+  });
+}
+
+// 删除当事人
+export function deleteLitigant(params) {
+  return service({
+    url: "/court/litigant/deleteLitigant.jhtml",
+    method: "POST",
+    params
+  });
+}
+
+// 获取当事人信息
+export function selectLitigant(params) {
+  return service({
+    url: "/court/litigant/selectLitigant.jhtml",
+    method: "post",
+    params
+  });
+}
+
+// 添加修改代理人
+export function addLawyer(params) {
+  return service({
+    url: "/court/lawyer/addOrUpdateLawyer.jhtml",
+    method: "POST",
+    data: params
+  });
+}
+
+// 提交案件
+export function addCase(params) {
+  return service({
+    url: "/court/case/submitCase.jhtml",
+    method: "POST",
+    params
   });
 }

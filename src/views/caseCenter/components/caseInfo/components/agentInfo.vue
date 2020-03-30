@@ -7,9 +7,9 @@
         <editBtn
           :isNeedAdd="true"
           @add="add"
-          @save="save"
           @del="del"
           @edit="edit"
+          @save="save"
           @cancel="cancel"
           :isEdit="isEditData"
         ></editBtn>
@@ -20,14 +20,15 @@
         class="person-info-left"
         v-if="litigantData"
       >
-        <personForm
+        <lawyerForm
           :personType="personType"
           :isEdit="isEditData"
           :isCaseCenter="true"
           :index="index"
           :litigant="litigantData"
-          ref="personForm"
-        ></personForm>
+          :proposerInfo="proposerInfo"
+          ref="lawyerForm"
+        ></lawyerForm>
       </div>
       <div
         class="person-info-right"
@@ -47,10 +48,9 @@
 <script>
 import editBtn from '@/components/button/editButton'
 import titleIcon from '@/components/styleIcon/titleIcon'
-import personForm from '@/components/form/personForm'
+import lawyerForm from '@/components/form/lawyerForm'
 import meterials from '@/components/materials/materials'
-import { IDENTITYMAP, SEXMAP } from '@/utils/constVal.js'
-import { addLitigant, editLitigant, selectLitigant } from '@/api/case/case.js'
+import { addLawyer } from '@/api/case/case.js'
 export default {
   data() {
     return {
@@ -77,15 +77,15 @@ export default {
       type: Boolean,
       value: false
     },
-    caseId: null, //案件ID
     index: null, //表示当前为第几个受理人
-    litigant: null //组件传来的代理人信息
+    litigant: null, //组件传来的代理人信息
+    proposerInfo: null //组件传过来的申请人信息
   },
   watch: {
     litigant() {
       this.litigantData = [
         {
-          name: '申请人',
+          name: '代理人',
           data: {}
         }
       ]
@@ -97,13 +97,18 @@ export default {
     }
   },
   components: {
-    personForm,
+    lawyerForm,
     titleIcon,
     editBtn,
     meterials
   },
   created() {
-    this.litigantData = null
+    this.litigantData = [
+      {
+        name: '代理人',
+        data: {}
+      }
+    ]
     this.litigantData = this.litigant
     this.getImgUrl()
     this.isEditData = this.isEdit
@@ -113,30 +118,8 @@ export default {
     add() {
       this.$emit('add')
     },
-    save() {
-      this.$emit('save')
-      let params = this.$refs.personForm.paramsData
-      let imgParams = this.$refs.uploadImg.imgsUrlData
-      if (imgParams && imgParams.length > 0) {
-        params.frontImage = imgParams[0] || null
-        params.backImage = imgParams[1] || null
-      }
-      if (this.litigantData.id) {
-        params.litigantId = this.litigantData.id
-        this.editLitigant(params)
-      } else {
-        params.lawCaseId = this.caseId
-        if (this.personType == 1) {
-          params.litigationStatus = 4
-        } else if (this.personType == 3) {
-          params.litigationStatus = 5
-        }
-        this.addLitigant(params)
-      }
-    },
     del() {
       this.$emit('del')
-      console.log('---删除---')
     },
     edit() {
       this.isEditData = true
@@ -144,12 +127,49 @@ export default {
     cancel() {
       this.isEditData = false
     },
+    save() {
+      let params = JSON.parse(JSON.stringify(this.$refs.lawyerForm.paramsData))
+      let imgParams = this.$refs.uploadImg.imgsUrlData
+      if (imgParams && imgParams.length > 0) {
+        params.frontImage = imgParams[0] || null
+        params.backImage = imgParams[1] || null
+      }
+      if (params.years) {
+        params.years = parseInt(params.years)
+      }
+      console.log('---传入的参数----')
+      console.log(params)
+      if (this.litigantData.id) {
+        params.lawyerId = this.litigantData.id
+        addLawyer(params).then(res => {
+          if (res.state == 100) {
+            this.$message({
+              showClose: true,
+              message: res.message,
+              type: 'success'
+            })
+            this.isEditData = false
+          }
+        })
+      } else {
+        addLawyer(params).then(res => {
+          if (res.state == 100) {
+            this.$message({
+              showClose: true,
+              message: res.message,
+              type: 'success'
+            })
+            this.isEditData = false
+          }
+        })
+      }
+    },
     getImgUrl() {
-      this.imgUrls = []
       if (!this.litigantData) {
         this.imgUrls = []
         return
       }
+      this.imgUrls = []
       if (this.litigantData.frontImage) {
         this.imgUrls.push(this.litigantData.frontImage)
       }
@@ -157,50 +177,6 @@ export default {
         this.imgUrls.push(this.litigantData.backImage)
       }
       this.isShow = true
-    },
-    // 修改当事人
-    editLitigant(params) {
-      editLitigant(params).then(res => {
-        if (res.state == 100) {
-          this.$message({
-            showClose: true,
-            message: res.message,
-            type: 'success'
-          })
-          this.selectLitigant(params.litigantId)
-          this.isEditData = false
-        } else {
-          this.$message({
-            showClose: true,
-            message: res.message,
-            type: 'error'
-          })
-        }
-      })
-    },
-    // 添加当事人
-    addLitigant(params) {
-      addLitigant(params).then(res => {
-        if (res.state == 100) {
-          this.$message({
-            showClose: true,
-            message: res.message,
-            type: 'success'
-          })
-          this.selectLitigant(res.litigantId)
-          this.isEditData = false
-        }
-      })
-    },
-    selectLitigant(id) {
-      selectLitigant({ litigantId: id }).then(res => {
-        let data = JSON.parse(JSON.stringify(res.litigant))
-        this.litigantData = data
-        this.litigantData.typeChar = IDENTITYMAP[data.identityType]
-        this.litigantData.name = data.litigantName
-        this.litigantData.sex = SEXMAP[data.litigantSex]
-        this.litigantData.phone = data.litigantPhone
-      })
     }
   }
 }

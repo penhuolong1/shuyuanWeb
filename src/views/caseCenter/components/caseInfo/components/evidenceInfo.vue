@@ -5,19 +5,32 @@
       <titleIcon :titleText="titleText"></titleIcon>
       <div class="header-right">
         <span>证据信息</span>
-        <editBtn></editBtn>
+        <editBtn
+          @edit="edit"
+          @save="save"
+          @add="add"
+          @cancel="cancel"
+          @del="del"
+          :isNeedAdd="true"
+        ></editBtn>
       </div>
     </div>
-    <div class="content">
+    <div
+      class="content"
+      v-for="(item, index) in evidenceDataInfo"
+      :key="index"
+    >
       <div class="content-left">
         <div
           class="text-wrapper"
-          v-if="!isEdit"
+          v-if="!isEditData"
         >
-          <div class="title">证据序号1</div>
-          <div class="text">原告电子汇款单1</div>
+          <div class="title">证据序号{{index+1}}</div>
+          <div class="text">{{item.imgUrls.length}}份</div>
           <div class="title">证据名称</div>
-          <div class="text">电子汇款单</div>
+          <div class="text">{{item.evidenceName}}</div>
+          <div class="title">证明对象</div>
+          <div class="text">{{item.objectOfProof}}</div>
           <div class="title">证据来源</div>
           <div class="text">当事人提供</div>
           <div class="title">份数</div>
@@ -25,7 +38,7 @@
         </div>
         <div
           class="edit-wrapper"
-          v-if="isEdit"
+          v-if="isEditData"
         >
           <div class="title">证据序号1</div>
           <div class="text">
@@ -58,7 +71,10 @@
         </div>
       </div>
       <div class="content-right">
-        <meterials></meterials>
+        <meterials
+          :isEdit="isEditData"
+          :imgUrls="item.imgUrls"
+        ></meterials>
       </div>
     </div>
   </div>
@@ -72,13 +88,27 @@ export default {
   data() {
     return {
       titleText: '证',
-      input: ''
+      input: '',
+      isEditData: false,
+      evidenceDataInfo: null // 接收证据信息
     }
   },
   props: {
     isEdit: {
       type: Boolean,
       value: false
+    },
+    evidenceData: null
+  },
+  watch: {
+    evidenceData: {
+      handler() {
+        this.getEvidenceDataInfo()
+      },
+      deep: true
+    },
+    watch() {
+      this.isEditData = this.isEdit
     }
   },
   components: {
@@ -86,9 +116,54 @@ export default {
     titleIcon,
     meterials
   },
-  created() {},
+  created() {
+    this.isEditData = this.isEdit
+    this.getEvidenceDataInfo()
+  },
   mounted() {},
-  methods: {}
+  methods: {
+    edit() {
+      this.isEditData = true
+    },
+    save() {
+      this.isEditData = false
+    },
+    add() {
+      this.isEditData = false
+    },
+    del() {
+      this.isEditData = false
+    },
+    cancel() {
+      this.isEditData = false
+    },
+    // 翻译证据数据
+    getEvidenceDataInfo() {
+      this.evidenceDataInfo = JSON.parse(JSON.stringify(this.evidenceData))
+      // if (this.evidenceDataInfo && this.evidenceDataInfo.length > 0) {
+      //   this.evidenceDataInfo.forEach(item => {
+      //     if (item.evidenceAttachments && item.evidenceAttachments.length > 0) {
+      //       item.imgUrls = []
+      //       item.evidenceAttachments.forEach(item1 => {
+      //         item.imgUrls.push(item1.url)
+      //       })
+      //     }
+      //   })
+      // }
+      console.log('证据信息')
+      if (this.evidenceDataInfo && this.evidenceDataInfo.length > 0) {
+        this.evidenceDataInfo.forEach(item => {
+          item.imgUrls = []
+          if (item.evidenceAttachments && item.evidenceAttachments.length > 0) {
+            item.evidenceAttachments.forEach(item1 => {
+              item.imgUrls.push(item1.url)
+            })
+          }
+        })
+      }
+      console.log(this.evidenceDataInfo)
+    }
+  }
 }
 </script>
 

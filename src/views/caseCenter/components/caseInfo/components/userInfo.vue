@@ -1,49 +1,41 @@
 <template>
   <div class="party-info-wrapper">
     <div class="header">申请人</div>
-    <div
-      class="party-info-wrapper-box"
-      v-if="isshow"
-    >
+    <div class="party-info-wrapper-box"
+         v-if="isshow">
       <!-- 申请人部分 -->
       <div class="proposer-wrapper">
-        <personInfo
-          v-for="(item, index) in proposerItems"
-          :key="index"
-          :headText="item.name+(index+1)"
-          :personType="1"
-          @add="addProPoser"
-          @del="delProPoser(index)"
-          :isEdit="isEdit"
-          :litigant="item.data"
-        ></personInfo>
+        <personInfo v-for="(item, index) in proposerItems"
+                    :key="index"
+                    :headText="item.name+(index+1)"
+                    :personType="1"
+                    @add="addProPoser"
+                    @del="delProPoser(index)"
+                    :isEdit="isEdit"
+                    :litigant="item.data"></personInfo>
       </div>
       <!-- 代理人部分 -->
       <div class="agent-wrapper">
-        <personInfo
-          v-for="(item, index) in agentItems"
-          :key="index"
-          :headText="item.name+(index+1)"
-          :personType="2"
-          @add="addagent"
-          @del="delagent(index)"
-          :isEdit="isEdit"
-          :litigant="item.data"
-          :isAgent="true"
-        ></personInfo>
+        <personInfo v-for="(item, index) in agentItems"
+                    :key="index"
+                    :headText="item.name+(index+1)"
+                    :personType="2"
+                    @add="addagent"
+                    @del="delagent(index)"
+                    :isEdit="isEdit"
+                    :litigant="item.data"
+                    :isAgent="true"></personInfo>
       </div>
       <!-- 被申请人部分 -->
       <div class="respondent-wrapper">
-        <personInfo
-          v-for="(item, index) in respondentItems"
-          :key="index"
-          :headText="item.name+(index+1)"
-          :personType="3"
-          @add="addrespondent"
-          @del="delrespondent(index)"
-          :isEdit="isEdit"
-          :litigant="item.data"
-        ></personInfo>
+        <personInfo v-for="(item, index) in respondentItems"
+                    :key="index"
+                    :headText="item.name+(index+1)"
+                    :personType="3"
+                    @add="addrespondent"
+                    @del="delrespondent(index)"
+                    :isEdit="isEdit"
+                    :litigant="item.data"></personInfo>
       </div>
     </div>
   </div>
@@ -53,7 +45,7 @@
 import personInfo from './personInfo'
 import { IDENTITYMAP, SEXMAP, AGENTTYPEMAP } from '@/utils/constVal.js'
 export default {
-  data() {
+  data () {
     return {
       proposerItems: [
         {
@@ -86,12 +78,12 @@ export default {
   },
   watch: {
     litigants: {
-      handler() {
+      handler () {
         this.deallItigants()
       },
       deep: true
     },
-    isEdit() {
+    isEdit () {
       if (this.isEdit) {
         this.isshow = true
         this.proposerItems = [
@@ -122,20 +114,20 @@ export default {
   components: {
     personInfo
   },
-  created() {
+  created () {
     if (this.isEdit) {
       this.isshow = true
     }
   },
-  mounted() {},
+  mounted () { },
   methods: {
     // 添加申请人
-    addProPoser() {
+    addProPoser () {
       this.proposerItems.push({})
       console.log('--添加申请人--')
     },
     // 删除代理人
-    delProPoser(index) {
+    delProPoser (index) {
       if (this.proposerItems.length == 1) {
         this.$message({
           showClose: true,
@@ -147,11 +139,11 @@ export default {
       this.proposerItems.splice(index, 1)
     },
     // 添加代理人
-    addagent() {
+    addagent () {
       this.agentItems.push({})
     },
     // 删除代理人
-    delagent(index) {
+    delagent (index) {
       if (this.agentItems.length == 1) {
         this.$message({
           showClose: true,
@@ -163,11 +155,11 @@ export default {
       this.agentItems.splice(index, 1)
     },
     // 添加被申请人
-    addrespondent() {
+    addrespondent () {
       this.respondentItems.push({})
     },
     // 删除被申请人
-    delrespondent(index) {
+    delrespondent (index) {
       if (this.respondentItems.length == 1) {
         this.$message({
           showClose: true,
@@ -179,7 +171,7 @@ export default {
       this.respondentItems.splice(index, 1)
     },
     // 处理受理人数据
-    deallItigants() {
+    deallItigants () {
       let data = JSON.parse(JSON.stringify(this.litigants))
       if (data && data.length > 0) {
         this.proposerItems = []
@@ -231,7 +223,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '~@/styles/variables.scss';
+@import "~@/styles/variables.scss";
 .party-info-wrapper {
   margin-top: 50px;
   .header {

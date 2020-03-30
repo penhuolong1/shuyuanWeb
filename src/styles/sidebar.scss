@@ -59,10 +59,11 @@
 
     .el-menu {
       border: none;
-      height: 100%;
+      height: auto;
+      // height: 100%;
       width: 160px;
       margin-left: 30px;
-      min-height: 100%;
+      // min-height: 100%;
     }
 
     // menu hover
