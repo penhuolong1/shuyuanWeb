@@ -15,12 +15,13 @@
           @add="addProPoser"
           @del="delProPoser(index)"
           :isEdit="isEdit"
+          :caseId="caseId"
           :litigant="item.data"
         ></personInfo>
       </div>
       <!-- 代理人部分 -->
       <div class="agent-wrapper">
-        <personInfo
+        <agentInfo
           v-for="(item, index) in agentItems"
           :key="index"
           :headText="item.name+(index+1)"
@@ -29,8 +30,9 @@
           @del="delagent(index)"
           :isEdit="isEdit"
           :litigant="item.data"
-          :isAgent="true"
-        ></personInfo>
+          :caseId="caseId"
+          :proposerInfo="proposerInfo"
+        ></agentInfo>
       </div>
       <!-- 被申请人部分 -->
       <div class="respondent-wrapper">
@@ -42,6 +44,7 @@
           @add="addrespondent"
           @del="delrespondent(index)"
           :isEdit="isEdit"
+          :caseId="caseId"
           :litigant="item.data"
         ></personInfo>
       </div>
@@ -51,7 +54,10 @@
 
 <script>
 import personInfo from './personInfo'
+import agentInfo from './agentInfo'
 import { IDENTITYMAP, SEXMAP, AGENTTYPEMAP } from '@/utils/constVal.js'
+import { deleteLitigant } from '@/api/case/case.js'
+
 export default {
   data() {
     return {
@@ -73,7 +79,8 @@ export default {
           data: {}
         }
       ],
-      isshow: false // 当受理人数据没有处理完毕的时候不处理显示组件
+      isshow: false, // 当受理人数据没有处理完毕的时候不处理显示组件
+      proposerInfo: [] //申请人信息用于添加代理人信息的时候和代理人关联
     }
   },
   props: {
@@ -82,6 +89,7 @@ export default {
       type: Boolean,
       value: false
     },
+    caseId: null, //获取案件ID
     litigants: null //受理人信息
   },
   watch: {
@@ -115,12 +123,11 @@ export default {
       } else {
         this.isshow = false
       }
-      console.log('---isEdit----')
-      console.log(this.isEdit)
     }
   },
   components: {
-    personInfo
+    personInfo,
+    agentInfo
   },
   created() {
     if (this.isEdit) {
@@ -131,10 +138,13 @@ export default {
   methods: {
     // 添加申请人
     addProPoser() {
-      this.proposerItems.push({})
+      this.proposerItems.push({
+        name: '申请人',
+        data: {}
+      })
       console.log('--添加申请人--')
     },
-    // 删除代理人
+    // 删除申请人
     delProPoser(index) {
       if (this.proposerItems.length == 1) {
         this.$message({
@@ -144,11 +154,32 @@ export default {
         })
         return
       }
-      this.proposerItems.splice(index, 1)
+      let id = this.proposerItems[index].data.id
+      if (id) {
+        this.$confirm('是否确认删除')
+          .then(() => {
+            deleteLitigant({ litigantId: id }).then(res => {
+              if (res.state == 100) {
+                this.$message({
+                  showClose: true,
+                  message: res.message,
+                  type: 'success'
+                })
+                this.proposerItems.splice(index, 1)
+              }
+            })
+          })
+          .catch(() => {})
+      } else {
+        this.proposerItems.splice(index, 1)
+      }
     },
     // 添加代理人
     addagent() {
-      this.agentItems.push({})
+      this.agentItems.push({
+        name: '代理人',
+        data: {}
+      })
     },
     // 删除代理人
     delagent(index) {
@@ -184,6 +215,9 @@ export default {
       if (data && data.length > 0) {
         this.proposerItems = []
         this.respondentItems = []
+        let proposerItemsFlag = false
+        let respondentItemsFlag = false
+        let lawyerFlag = false
         data.forEach(item => {
           if (item.litigationStatus) {
             // 转换成personForm通用的键名以及翻译一些类型
@@ -192,13 +226,19 @@ export default {
             item.sex = SEXMAP[item.litigantSex]
             item.phone = item.litigantPhone
             if (item.litigationStatus.id == 4) {
+              proposerItemsFlag = true
               //申请人
               this.proposerItems.push({
                 name: '申请人',
                 data: item
               })
+              this.proposerInfo.push({
+                id: item.id,
+                name: item.litigantName
+              })
             }
             if (item.litigationStatus.id == 5) {
+              respondentItemsFlag = true
               //被申请人
               this.respondentItems.push({
                 name: '被申请人',
@@ -209,8 +249,9 @@ export default {
           if (item.lawyer && item.lawyer.length > 0) {
             this.agentItems = []
             item.lawyer.forEach(item1 => {
-              item1.mandatorName = item1.litigantName
-              item1.mandatorID = item1.id
+              lawyerFlag = true
+              item1.mandatorName = item.litigantName
+              item1.mandatorID = item.id
               item1.typeChar = AGENTTYPEMAP[item1.agentType]
               item1.name = item1.agentName
               item1.sex = ''
@@ -223,7 +264,51 @@ export default {
             })
           }
         })
+        if (!proposerItemsFlag) {
+          this.proposerItems = [
+            {
+              name: '申请人',
+              data: {}
+            }
+          ]
+        }
+        if (!respondentItemsFlag) {
+          this.respondentItems = [
+            {
+              name: '被申请人',
+              data: {}
+            }
+          ]
+        }
+        if (!lawyerFlag) {
+          this.agentItems = [
+            {
+              name: '申请人代理人信息',
+              data: {}
+            }
+          ]
+        }
+      } else {
+        this.proposerItems = [
+          {
+            name: '申请人',
+            data: {}
+          }
+        ]
+        this.agentItems = [
+          {
+            name: '申请人代理人信息',
+            data: {}
+          }
+        ]
+        this.respondentItems = [
+          {
+            name: '被申请人',
+            data: {}
+          }
+        ]
       }
+
       this.isshow = true
     }
   }

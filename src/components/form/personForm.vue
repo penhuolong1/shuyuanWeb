@@ -52,40 +52,11 @@
       <div class="item item-value border-right">{{personMap[personType]}}</div>
       <div class="item item-value item-style">
         <el-select
-          v-model="value"
+          v-model="paramsData.identityType"
           placeholder="请选择"
         >
           <el-option
             v-for="item in identypeData"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          >
-          </el-option>
-        </el-select>
-      </div>
-      <div class="item item-key">姓名</div>
-      <div class="item item-value border-right">
-        <el-input
-          v-model="input"
-          placeholder="请输入内容"
-        ></el-input>
-      </div>
-      <div class="item item-key">民族</div>
-      <div class="item item-value">
-        <el-input
-          v-model="input"
-          placeholder="请输入内容"
-        ></el-input>
-      </div>
-      <div class="item item-key">性别</div>
-      <div class="item item-value border-right">
-        <el-select
-          v-model="value"
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in options"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -93,25 +64,55 @@
           </el-option>
         </el-select>
       </div>
-      <div class="item item-key">年龄</div>
-      <div class="item item-value">
+      <div class="item item-key">姓名</div>
+      <div class="item item-value border-right">
         <el-input
-          v-model="input"
-          type="number"
+          v-model="paramsData.name"
           placeholder="请输入内容"
         ></el-input>
+      </div>
+      <div class="item item-key">民族</div>
+      <div class="item item-value">
+        <el-input
+          v-model="paramsData.nation"
+          placeholder="请输入内容"
+        ></el-input>
+      </div>
+      <div class="item item-key">性别</div>
+      <div class="item item-value border-right">
+        <el-select
+          v-model="paramsData.sex"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in sexOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </div>
+      <div class="item item-key">出生日期</div>
+      <div class="item item-value">
+        <el-date-picker
+          v-model="paramsData.birthday"
+          type="date"
+          placeholder="选择日期"
+        >
+        </el-date-picker>
       </div>
       <div class="item item-value">{{personType != 2 ? '证件号码':'证件号码&律师职业证号'}}</div>
       <div class="item item-value item-style1">
         <el-input
-          v-model="input"
+          v-model="paramsData.identityCard"
           placeholder="请输入内容"
         ></el-input>
       </div>
       <div class="item item-key">联系号码</div>
       <div class="item item-key item-style2">
         <el-input
-          v-model="input"
+          v-model="paramsData.litigantPhone"
           type="number"
           placeholder="请输入内容"
         ></el-input>
@@ -119,14 +120,14 @@
       <div class="item item-value">住址</div>
       <div class="item item-value item-style3">
         <el-input
-          v-model="input"
+          v-model="paramsData.address"
           placeholder="请输入内容"
         ></el-input>
       </div>
       <div class="item item-key">工作单位或职务</div>
       <div class="item item-key item-style4">
         <el-input
-          v-model="input"
+          v-model="paramsData.employer"
           placeholder="请输入内容"
         ></el-input>
       </div>
@@ -141,26 +142,14 @@ export default {
   data() {
     return {
       input: '',
-      options: [
+      sexOptions: [
         {
-          value: '选项1',
-          label: '黄金糕'
+          value: 0,
+          label: '男'
         },
         {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
+          value: 1,
+          label: '女'
         }
       ],
       value: '',
@@ -177,16 +166,26 @@ export default {
         identityType: null, //身份证类别 1.自然人-身份证；2法人-统一信用代码
         identityCard: null, //身份证号
         sex: null, // 性别
-        nation: null // 民族
-      } //提交所需要的对象
+        nation: null, // 民族
+        birthday: null, //出生日期
+        litigantPhone: null, //手机号码
+        address: null, // 地址
+        employer: null, // 工作单位
+        litigationStatus: null // 诉讼地位：1.原告；2.被告；3.第三人；4.申请人；5.被申请人
+      } //申请人和被申请人提交对象
     }
   },
   watch: {
     litigant: {
       handler() {
         this.formData = this.litigant
+        this.getParamsData(this.formData)
       },
       deep: true
+    },
+    isEdit() {
+      console.log('---是否编辑----')
+      console.log(this.isEdit)
     }
   },
   props: {
@@ -212,20 +211,40 @@ export default {
   created() {
     this.formData = this.litigant
     this.getIdentypeData()
+    this.getParamsData(this.formData)
   },
   mounted() {},
   methods: {
     getIdentypeData() {
       for (let key in IDENTITYMAP) {
         this.identypeData.push({
-          id: key,
-          name: IDENTITYMAP[key]
+          value: parseInt(key),
+          label: IDENTITYMAP[key]
         })
       }
     },
+
     getParamsData(data) {
-      if (data) {
+      if (!data) {
         return
+      }
+      if (this.personType == 1 || this.personType == 3) {
+        this.paramsData = {
+          name: data.name, // 姓名
+          identityType: data.identityType, //身份证类别 1.自然人-身份证；2法人-统一信用代码
+          identityCard: data.identityCard, //身份证号
+          sex: data.litigantSex, // 性别
+          nation: data.nation, // 民族
+          birthday: data.birthday, //出生日期
+          litigantPhone: data.phone, //手机号码
+          address: data.address, // 地址
+          employer: data.employer // 工作单位
+        }
+        if (this.personType == 1) {
+          // this.personType.litigationStatus = 4
+        } else {
+          // this.personType.litigationStatus = 5
+        }
       }
     }
   }

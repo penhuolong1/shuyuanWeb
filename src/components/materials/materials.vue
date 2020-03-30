@@ -41,6 +41,10 @@
         v-if="!isEdit"
       >
         <div
+          class="no-img"
+          v-if="!imgsUrlData || imgsUrlData.length == 0"
+        >(暂无文件)</div>
+        <div
           class="img-wrapper"
           v-for="(item, index) in imgsUrlData"
           :key="index"
@@ -57,31 +61,31 @@
 
 <script>
 import { uploadImg } from '@/api/case/case.js'
-import pic1 from '@/assets/img/partyInfo.png'
 export default {
   data() {
     return {
-      imgsUrlData: [], // 接收组件传过来的项目地址
-      isEdit: true
+      imgsUrlData: [] // 接收组件传过来的图片地址
     }
   },
   props: {
     maxImgNum: null, //最大上传图片数
-    imgUrls: null // 父组件传来的图片数据
+    imgUrls: null, // 父组件传来的图片数据
+    isEdit: {
+      type: Boolean,
+      value: false
+    }
   },
   watch: {
     imgUrls: {
       handler() {
-        // this.imgsUrlData = this.imgUrls
+        this.imgsUrlData = this.imgUrls
       },
       deep: true
     }
   },
   components: {},
   created() {
-    console.log('图片地址')
-    console.log(this.imgUrls)
-    // this.imgsUrlData = this.imgUrls
+    this.imgsUrlData = this.imgUrls
   },
   mounted() {},
   methods: {
@@ -92,8 +96,6 @@ export default {
       let file = e.target.files[0]
       let param = new FormData() //创建form对象
       param.append('file', file) //通过append向form对象添加数据
-      console.log('----params----')
-      console.log(param)
       uploadImg(param).then(res => {
         if (res.state === 100) {
           this.$message({
@@ -139,6 +141,10 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    .no-img {
+      font-size: 20px;
+      color: #bababa;
+    }
     .upload-content {
       flex: 1;
     }

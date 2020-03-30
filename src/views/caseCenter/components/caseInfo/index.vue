@@ -20,11 +20,20 @@
     <useInfo
       :isEdit="isEdit"
       :litigants="litigants"
+      :caseId="caseId"
     ></useInfo>
     <!-- 纠纷概况 -->
-    <dispute :isEdit="isEdit"></dispute>
+    <dispute
+      :isEdit="isEdit"
+      :disputeInfo="disputeInfo"
+      :caseId="caseId"
+      :countId="countId"
+    ></dispute>
     <!-- 证据信息 -->
-    <evidenceInfo :isEdit="isEdit"></evidenceInfo>
+    <evidenceInfo
+      :isEdit="isEdit"
+      :evidenceData="evidenceData"
+    ></evidenceInfo>
   </div>
 </template>
 
@@ -37,7 +46,7 @@ export default {
   data() {
     return {
       litigants: null, //受理人信息
-      dispute: null, // 纠纷概括信息
+      disputeInfo: null, // 纠纷概括信息
       evidenceData: null // 证据信息
     }
   },
@@ -53,7 +62,8 @@ export default {
       type: Boolean,
       value: false
     },
-    lawCaseData: null //案件详情
+    lawCaseData: null, //案件详情
+    countId: null // 机构ID
   },
   watch: {
     lawCaseData: {
@@ -61,11 +71,15 @@ export default {
         this.dealCaseData()
       },
       deep: true
+    },
+    countId() {
+      console.log('机构ID1')
+      console.log(this.countId)
     }
   },
   created() {
-    console.log('-----isEdit---')
-    console.log(this.isEdit)
+    console.log('机构ID1')
+    console.log(this.countId)
   },
   mounted() {},
   methods: {
@@ -73,6 +87,20 @@ export default {
     dealCaseData() {
       let data = JSON.parse(JSON.stringify(this.lawCaseData))
       this.litigants = data.litigants
+      this.disputeInfo = {
+        mediateRequest: data.mediateRequest,
+        reason: data.reason
+      }
+      this.evidenceData = []
+      if (data.litigants && data.litigants.length > 0) {
+        data.litigants.forEach(item => {
+          if (item.evidences && item.evidences.length > 0) {
+            item.evidences.forEach(item1 => {
+              this.evidenceData.push(item1)
+            })
+          }
+        })
+      }
     }
   }
 }

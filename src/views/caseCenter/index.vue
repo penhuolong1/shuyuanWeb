@@ -24,6 +24,7 @@
         id="caseInfo"
         :isEdit="idEdit"
         :lawCaseData="lawCaseData"
+        :countId="countId"
       ></caseInfo>
     </div>
   </div>
@@ -50,6 +51,7 @@ export default {
           name: '组织调解'
         }
       ],
+      countId: null, // 机构ID
       idEdit: false, // 是否处于编辑状态
       lawCaseData: null, // 案件详情信息
       isShow: false // 当在首页时开始只显示列表 当点击添加话查看详情时才显示下面对应的菜单
@@ -77,7 +79,6 @@ export default {
       this.$nextTick(() => {
         document.getElementById('tab1').scrollIntoView()
       })
-      console.log(this.caseId)
     },
     addCase() {
       // 点击添加案件跳转到菜单部分
@@ -92,6 +93,9 @@ export default {
     // 获取子组件传过来的按键详情
     getLawCaseData(data) {
       this.lawCaseData = data
+      this.countId = data.court.id
+      console.log('---机构ID----')
+      console.log(this.countId)
     }
   }
 }
